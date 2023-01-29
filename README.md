@@ -4,7 +4,9 @@
 
 ## Project Vision / Elevator Pitch
 
-* Kurze Projektbeschreibung in wenigen Sätzen, inkl. Abgrenzung zu bisherigen Lösungen und anderen Projekten.
+With the help of **I2C** a possibility is to be offered to establish a communication over pictures by eye movement. For this purpose a table-like structure is used, in which e.g. 8 pictures are shown on a screen, by eye movement for example to the left the 4 pictures on the left side of the screen are selected and distributed on the screen, this can be repeated until the suitable picture was selected. This is intended to serve as a communication interface for people who can neither speak nor read, but can recognize images. The goal is to provide a simple and time and nerve saving solution for the person preparing the app.
+
+There are already solutions for people who can use writing as a means of communication, but no equivalent interface for the use of images.
 
 ## Project background / initial situation
     
