@@ -10,7 +10,7 @@ There are already solutions for people who can use writing as a means of communi
 
 ## Project background / initial situation
     
-* Warum wird das Projekt gestartet?
+This project is started because there are no practicable solutions for this kind of communication so far.
 
 ## Project goals and non-goals
 
