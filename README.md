@@ -20,7 +20,8 @@ Woran wird die Zielerreichung erkannt?
 
 ## Benefits
 
-* Welchen Nutzen hat das Unternehmen / der Auftraggeber durch die Umsetzung?
+Through the project, better communication can be enabled for people who can only communicate through images and for whom it is easier to control with the eyes than, for example, with switches. Furthermore, the goal is that no additional hardware is needed, except for a smartphone/tablet.
+The project is also intended to be open-source, so that no expensive proprietary software needs to be purchased.
 
 ## Project content: in-scope and out-of-scope
 * **Projektinhalt:**  
