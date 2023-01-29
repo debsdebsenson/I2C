@@ -15,8 +15,8 @@ This project is started because there are no practicable solutions for this kind
 ## Project goals and non-goals
 
 * Welche Ziele werden mit dem Projekt erreicht?  
-Welche Ziele werden nicht erreicht?  
-Woran wird die Zielerreichung erkannt?
+* Welche Ziele werden nicht erreicht?  
+* Woran wird die Zielerreichung erkannt?
 
 ## Benefits
 
@@ -24,23 +24,25 @@ Through the project, better communication can be enabled for people who can only
 The project is also intended to be open-source, so that no expensive proprietary software needs to be purchased.
 
 ## Project content: in-scope and out-of-scope
+
 * **Projektinhalt:**  
 Was ist alles Bestandteil (In-Scope)?
 
-**Out-of-Scope:**  
+* **Out-of-Scope:**  
 Das wird im Projekt nicht umgesetzt.
 
 ## Requirements
 
-Welche Anforderungen an das Projekt gibt es, die nicht unter In-Scope aufgelistet worden sind?
+* Welche Anforderungen an das Projekt gibt es, die nicht unter In-Scope aufgelistet worden sind?
 
-**Meilensteine:**  
-Auflistung der Kern-Meilensteine, die bereits früh im Projekt bekannt oder gesetzt worden sind.
+### Milestones
+
+* Auflistung der Kern-Meilensteine, die bereits früh im Projekt bekannt oder gesetzt worden sind.
 
 ## Results
 
 * Woran wird erkannt, dass das Projekt erfolgreich beendet worden ist?  
-Welche Ergebnisse liegen dann vor?
+* Welche Ergebnisse liegen dann vor?
 
 ## Funding
 
