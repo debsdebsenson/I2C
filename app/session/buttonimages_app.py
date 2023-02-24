@@ -39,7 +39,7 @@ class ButtonimagesApp(App):
         b1 = Button(text ="Push Me !",
                      color =(1, 0, .65, 1),
                      background_normal = '../images/placeholder1.png',
-                     background_down ='images/placeholder2.JPG',
+                     background_down ='../images/placeholder2.JPG',
                      size_hint = (.49, .49),
                      pos_hint = {'left':1, 'center_y':.5}
                    )
@@ -47,7 +47,7 @@ class ButtonimagesApp(App):
         b2 = Button(text ="Push Me Too !",
                      color =(1, 0, .65, 1),
                      background_normal = '../images/placeholder3.JPG',
-                     background_down ='images/placeholder2.JPG',
+                     background_down ='../images/placeholder2.JPG',
                      size_hint = (.49, .49),
                      pos_hint = {'right':1, 'center_y':.5}
                    )
