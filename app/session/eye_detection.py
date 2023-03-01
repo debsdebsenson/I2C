@@ -94,34 +94,122 @@ def draw_cross(frame, array_eye_points):
     # Creating the vertical line
     cv2.line(frame, array_eye_points[2], array_eye_points[3], (0, 255, 0),2)
 
-def eye_detection_loop(predictor, cap, detector):
-    while True:
-        _,frame = cap.read()
+# The eye is divided into two parts to find out where more sclera is visible.
+# If more of the sclera is visible on the right part, the person is gazing to
+# the left. For this detection a conversion to a grayscale is done, a treshold
+# is found and the white pixels are counted. The gaze ratio indicated where a
+# specific eye is pointing at. 
+# 
+# TBD: This is not always the case and probably needs to be corrected later:
+# "Normally both the eyes look in the same direction, so if we correctly detect
+# the gaze of a single eye, we detect the gaze of both eyes. Only if we want to
+# be more precise we could detect the gaze of both the eyes and use both values
+# to detect the gaze ratio."
+# There are several different cases to be covered here - also the case, that
+# maybe only one eye is detected etc.
+
+# Gaze direction detection
+# TBD: the performance of this function is very poor and need to be improved
+def get_gaze_ratio(eye_points_array, facial_landmarks, frame, gray):
+
+    #getting the area from the frame of the left eye only
+    left_eye_region = np.array([(facial_landmarks.part(eye_points_array[0]).x, facial_landmarks.part(eye_points_array[0]).y),
+                        (facial_landmarks.part(eye_points_array[1]).x, facial_landmarks.part(eye_points_array[1]).y),
+                        (facial_landmarks.part(eye_points_array[2]).x, facial_landmarks.part(eye_points_array[2]).y),
+                        (facial_landmarks.part(eye_points_array[3]).x, facial_landmarks.part(eye_points_array[3]).y),
+                        (facial_landmarks.part(eye_points_array[4]).x, facial_landmarks.part(eye_points_array[4]).y),
+                        (facial_landmarks.part(eye_points_array[5]).x, facial_landmarks.part(eye_points_array[5]).y)], np.int32)
+    
+    #cv2.polylines(frame, [left_eye_region], True, 255, 2)
+    height, width, _ = frame.shape
+
+    #create the mask to extract xactly the inside of the left eye and exclude all the sorroundings.
+    mask = np.zeros((height, width), np.uint8)
+    cv2.polylines(mask, [left_eye_region], True, 255, 2)
+    cv2.fillPoly(mask, [left_eye_region], 255)
+    eye = cv2.bitwise_and(gray, gray,mask = mask)
+    
+    #We now extract the eye from the face and we put it on his own window.Onlyt we need to keep in mind that wecan only cut
+    #out rectangular shapes from the image, so we take all the extremes points of the eyes to get the rectangle
+    min_x = np.min(left_eye_region[:, 0])
+    max_x = np.max(left_eye_region[:, 0])
+    min_y = np.min(left_eye_region[:, 1])
+    max_y = np.max(left_eye_region[:, 1])
+    gray_eye = eye[min_y: max_y, min_x: max_x]
+    
+    #threshold to seperate iris and pupil from the white part of the eye.
+    _, threshold_eye = cv2.threshold(gray_eye, 70, 255, cv2.THRESH_BINARY)
+    
+    #dividing the eye into left_side and right_side.
+    height, width = threshold_eye.shape
+    left_side_threshold = threshold_eye[0: height, 0: int(width / 2)]
+    left_side_white = cv2.countNonZero(left_side_threshold)
+    right_side_threshold = threshold_eye[0: height, int(width / 2): width]
+    right_side_white = cv2.countNonZero(right_side_threshold)
+    
+    if left_side_white == 0:
+        gaze_ratio = 1
         
+    elif right_side_white == 0:
+        gaze_ratio = 5
+        
+    else:
+        gaze_ratio = left_side_white / right_side_white
+    return gaze_ratio
+
+# In this function the gaze direction is displayed
+def display_gaze_direction(left_eye_points, right_eye_points, landmarks, frame, font, gray):
+    gaze_ratio_left_eye = get_gaze_ratio(left_eye_points, landmarks, frame, gray)
+    gaze_ratio_right_eye = get_gaze_ratio(right_eye_points, landmarks, frame, gray)
+    
+    average_gaze_ratio = (gaze_ratio_right_eye + gaze_ratio_left_eye) / 2
+    
+    if average_gaze_ratio <= 1:
+        cv2.putText(frame, "RIGHT", (50, 100), font, 2, (0, 0, 255), 3)
+        #new_frame[:] = (0, 0, 255) #blue
+    elif 1 < average_gaze_ratio < 1.7:
+        cv2.putText(frame, "CENTER", (50, 100), font, 2, (0, 0, 255), 3) #black
+    else:
+        #new_frame[:] = (255, 0, 0) #red
+        cv2.putText(frame, "LEFT", (50, 100), font, 2, (0, 0, 255), 3)
+
+# Loop to perform the eye detection
+def eye_detection_loop(predictor, cap, detector):
+
+    # Font of displayed text
+    font = cv2.FONT_HERSHEY_PLAIN
+
+    # Landmark points for the eyes
+    left_eye_points = (36, 37, 38, 39, 40, 41)
+    right_eye_points = (42, 43, 44, 45, 46, 47)
+     
+    while True:
+
+        _,frame = cap.read()
+
         # Change the color of the frame captured by webcam to gray
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        
+
         # To detect faces from gray color frame
         faces = detector(gray)
-        for face in faces:
 
-            # Landmark points for the eyes
-            left_eye_points = (36, 37, 38, 39, 40, 41)
-            right_eye_points = (42, 43, 44, 45, 46, 47)
+        for face in faces:
             
             # Detection of the landmarks of a face
             landmarks = predictor(gray, face)
             
-            array_eye_points_left = calcuate_eye_points(landmarks, left_eye_points)
-            array_eye_points_right = calcuate_eye_points(landmarks, right_eye_points)
+            #array_eye_points_left = calcuate_eye_points(landmarks, left_eye_points)
+            #array_eye_points_right = calcuate_eye_points(landmarks, right_eye_points)
 
-            draw_cross(frame, array_eye_points_left)
-            draw_cross(frame, array_eye_points_right)
+            #draw_cross(frame, array_eye_points_left)
+            #draw_cross(frame, array_eye_points_right)
 
-            calculated_eye_area = calculate_eye_area(landmarks, frame)
-            eye_mask = mask_creation(frame, calculated_eye_area, gray)
-            eye_area = extract_eye_area(calculated_eye_area, eye_mask)
-            extract_iris_and_pupil(eye_area)
+            #calculated_eye_area = calculate_eye_area(landmarks, frame)
+            #eye_mask = mask_creation(frame, calculated_eye_area, gray)
+            #eye_area = extract_eye_area(calculated_eye_area, eye_mask)
+            #extract_iris_and_pupil(eye_area)
+
+            display_gaze_direction(left_eye_points, right_eye_points, landmarks, frame, font, gray)
 
         # Display the image    
         cv2.imshow("Frame", frame)
@@ -129,6 +217,7 @@ def eye_detection_loop(predictor, cap, detector):
         #cv2.imshow("THRESHOLD",threshold_eye)
         #cv2.imshow("LEFT_EYE",left_eye)
         #cv2.imshow("mask",mask)
+
         #close the webcam when escape key is pressed
         if cv2.waitKey(1) == 27:
             break
@@ -153,9 +242,11 @@ def main_eye_detection():
     # For the detection of the facial landwark points
     predictor = dlib.shape_predictor(model_path())
 
-    # Open webcab to capture the image
+    # Open webcab to capture the images, detect the eye and finish the session
+    # afterwards.
     cap = cv2.VideoCapture(0)
     eye_detection(predictor, cap)
     finish_webcam_session(cap)
 
+# call main function for the eye detection 
 main_eye_detection()
