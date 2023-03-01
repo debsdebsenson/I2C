@@ -60,8 +60,8 @@ def calculate_eye_area(landmarks, frame):
 def mask_creation(frame, calculated_eye_area, gray):
     height, width, _ = frame.shape
     mask = np.zeros((height, width), np.uint8)
-    #cv2.polylines(mask, [calculated_eye_area], True, 255, 2)
-    #cv2.fillPoly(mask, [calculated_eye_area], 255)
+    cv2.polylines(mask, [calculated_eye_area], True, 255, 2)
+    cv2.fillPoly(mask, [calculated_eye_area], 255)
     eye_mask = cv2.bitwise_and(gray, gray, mask = mask)
     return eye_mask
 
@@ -94,6 +94,14 @@ def draw_cross(frame, array_eye_points):
     # Creating the vertical line
     cv2.line(frame, array_eye_points[2], array_eye_points[3], (0, 255, 0),2)
 
+def left_right_side_division(threshold_eye):
+    height, width = threshold_eye.shape
+    left_side_threshold = threshold_eye[0: height, 0: int(width / 2)]
+    left_side_white = cv2.countNonZero(left_side_threshold)
+    right_side_threshold = threshold_eye[0: height, int(width / 2): width]
+    right_side_white = cv2.countNonZero(right_side_threshold)
+    return [left_side_white, right_side_white]
+
 # The eye is divided into two parts to find out where more sclera is visible.
 # If more of the sclera is visible on the right part, the person is gazing to
 # the left. For this detection a conversion to a grayscale is done, a treshold
@@ -110,49 +118,39 @@ def draw_cross(frame, array_eye_points):
 
 # Gaze direction detection
 # TBD: the performance of this function is very poor and need to be improved
-def get_gaze_ratio(eye_points_array, facial_landmarks, frame, gray):
+def get_gaze_ratio(eye_points_array, landmarks, frame, gray):
 
     #getting the area from the frame of the left eye only
-    left_eye_region = np.array([(facial_landmarks.part(eye_points_array[0]).x, facial_landmarks.part(eye_points_array[0]).y),
-                        (facial_landmarks.part(eye_points_array[1]).x, facial_landmarks.part(eye_points_array[1]).y),
-                        (facial_landmarks.part(eye_points_array[2]).x, facial_landmarks.part(eye_points_array[2]).y),
-                        (facial_landmarks.part(eye_points_array[3]).x, facial_landmarks.part(eye_points_array[3]).y),
-                        (facial_landmarks.part(eye_points_array[4]).x, facial_landmarks.part(eye_points_array[4]).y),
-                        (facial_landmarks.part(eye_points_array[5]).x, facial_landmarks.part(eye_points_array[5]).y)], np.int32)
+    eye_region = np.array([(landmarks.part(eye_points_array[0]).x, landmarks.part(eye_points_array[0]).y),
+                        (landmarks.part(eye_points_array[1]).x, landmarks.part(eye_points_array[1]).y),
+                        (landmarks.part(eye_points_array[2]).x, landmarks.part(eye_points_array[2]).y),
+                        (landmarks.part(eye_points_array[3]).x, landmarks.part(eye_points_array[3]).y),
+                        (landmarks.part(eye_points_array[4]).x, landmarks.part(eye_points_array[4]).y),
+                        (landmarks.part(eye_points_array[5]).x, landmarks.part(eye_points_array[5]).y)], np.int32)
     
-    #cv2.polylines(frame, [left_eye_region], True, 255, 2)
-    height, width, _ = frame.shape
+    #cv2.polylines(frame, [eye_region], True, 255, 2)
+    #height, width, _ = frame.shape
 
     #create the mask to extract xactly the inside of the left eye and exclude all the sorroundings.
-    mask = np.zeros((height, width), np.uint8)
-    cv2.polylines(mask, [left_eye_region], True, 255, 2)
-    cv2.fillPoly(mask, [left_eye_region], 255)
-    eye = cv2.bitwise_and(gray, gray,mask = mask)
+    eye_mask = mask_creation(frame, eye_region, gray)
     
     #We now extract the eye from the face and we put it on his own window.Onlyt we need to keep in mind that wecan only cut
     #out rectangular shapes from the image, so we take all the extremes points of the eyes to get the rectangle
-    min_x = np.min(left_eye_region[:, 0])
-    max_x = np.max(left_eye_region[:, 0])
-    min_y = np.min(left_eye_region[:, 1])
-    max_y = np.max(left_eye_region[:, 1])
-    gray_eye = eye[min_y: max_y, min_x: max_x]
+    calculated_eye_area = calculate_eye_area(landmarks, frame)
+    eye_area = extract_eye_area(calculated_eye_area, eye_mask)
     
     #threshold to seperate iris and pupil from the white part of the eye.
-    _, threshold_eye = cv2.threshold(gray_eye, 70, 255, cv2.THRESH_BINARY)
+    _, threshold_eye = cv2.threshold(eye_area, 70, 255, cv2.THRESH_BINARY)
     
     #dividing the eye into left_side and right_side.
-    height, width = threshold_eye.shape
-    left_side_threshold = threshold_eye[0: height, 0: int(width / 2)]
-    left_side_white = cv2.countNonZero(left_side_threshold)
-    right_side_threshold = threshold_eye[0: height, int(width / 2): width]
-    right_side_white = cv2.countNonZero(right_side_threshold)
+    left_right_eye_side = left_right_side_division(threshold_eye)
+    left_side_white = left_right_eye_side[0]
+    right_side_white = left_right_eye_side[1]
     
     if left_side_white == 0:
         gaze_ratio = 1
-        
     elif right_side_white == 0:
         gaze_ratio = 5
-        
     else:
         gaze_ratio = left_side_white / right_side_white
     return gaze_ratio
