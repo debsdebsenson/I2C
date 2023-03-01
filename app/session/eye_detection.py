@@ -155,12 +155,16 @@ def get_gaze_ratio(eye_points_array, landmarks, frame, gray):
         gaze_ratio = left_side_white / right_side_white
     return gaze_ratio
 
-# In this function the gaze direction is displayed
-def display_gaze_direction(left_eye_points, right_eye_points, landmarks, frame, font, gray):
+def get_average_gaze_ratio(left_eye_points, right_eye_points, landmarks, frame, gray):
     gaze_ratio_left_eye = get_gaze_ratio(left_eye_points, landmarks, frame, gray)
     gaze_ratio_right_eye = get_gaze_ratio(right_eye_points, landmarks, frame, gray)
     
     average_gaze_ratio = (gaze_ratio_right_eye + gaze_ratio_left_eye) / 2
+    #cv2.putText(frame, str(average_gaze_ratio), (200, 100), font, 2, (0, 255, 0), 3)
+    return average_gaze_ratio
+
+# In this function the gaze direction is displayed
+def display_gaze_direction(average_gaze_ratio, frame, font):
     
     if average_gaze_ratio <= 1:
         cv2.putText(frame, "RIGHT", (50, 100), font, 2, (0, 0, 255), 3)
@@ -170,7 +174,7 @@ def display_gaze_direction(left_eye_points, right_eye_points, landmarks, frame, 
     else:
         #new_frame[:] = (255, 0, 0) #red
         cv2.putText(frame, "LEFT", (50, 100), font, 2, (0, 0, 255), 3)
-
+        
 # Loop to perform the eye detection
 def eye_detection_loop(predictor, cap, detector):
 
@@ -207,7 +211,12 @@ def eye_detection_loop(predictor, cap, detector):
             #eye_area = extract_eye_area(calculated_eye_area, eye_mask)
             #extract_iris_and_pupil(eye_area)
 
-            display_gaze_direction(left_eye_points, right_eye_points, landmarks, frame, font, gray)
+            # !!!!! TBD: function needs to be written where the time is 
+            # detected, how long someone is looking at left or right side. And
+            # if person is 10s looking at one side, that side is selected.
+            average_gaze_ratio = get_average_gaze_ratio(left_eye_points, right_eye_points, landmarks, frame, gray)
+            #get_time_gazed_at_one_side()   
+            display_gaze_direction(average_gaze_ratio, frame, font)
 
         # Display the image    
         cv2.imshow("Frame", frame)
