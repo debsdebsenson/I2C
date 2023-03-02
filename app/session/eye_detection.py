@@ -18,6 +18,15 @@ import cv2 # For image processing
 import numpy as np
 import dlib # Detection of facial landmarks
 import os
+import time
+
+# Function to get the current time in milliseconds
+def current_time_milliseconds():
+    return time.time() * 1000
+
+# Fucntion for calculation a time difference
+def calculate_time_difference(start_time, current_time):
+    return round(current_time - start_time)
 
 # Function for calculation of the mid point of p1 and p2 that returns x and y
 # coordinates of the midd point
@@ -163,17 +172,42 @@ def get_average_gaze_ratio(left_eye_points, right_eye_points, landmarks, frame, 
     #cv2.putText(frame, str(average_gaze_ratio), (200, 100), font, 2, (0, 255, 0), 3)
     return average_gaze_ratio
 
+# get the time differnce while gazing/session is running
+def get_time_difference_while_gazing_in_progress(previous_gaze_direction, gaze_direction, start_time):
+    if previous_gaze_direction == gaze_direction:
+        current_time = current_time_milliseconds()
+        time_diff = calculate_time_difference(start_time, current_time)
+    else:
+        start_time = current_time_milliseconds()
+        time_diff = 0
+        print(f"_____Changed gaze direction at {start_time}______________")
+    return time_diff, start_time
+
+# TBD: This is only a placeholder function and has to be replaced later on 
+def event_when_5ms_same_gaze_direction(time_diff):
+    if time_diff >= 5000:
+        print(f"EVENT, gazed at one side for more tan 5s: {time_diff}")
+
 # In this function the gaze direction is displayed
-def display_gaze_direction(average_gaze_ratio, frame, font):
-    
+def display_gaze_direction(average_gaze_ratio, frame, font, previous_gaze_direction, start_time):
+
     if average_gaze_ratio <= 1:
-        cv2.putText(frame, "RIGHT", (50, 100), font, 2, (0, 0, 255), 3)
+        gaze_direction = "RIGHT"
+        time_diff, start_time = get_time_difference_while_gazing_in_progress(previous_gaze_direction, gaze_direction, start_time)
+        cv2.putText(frame, gaze_direction, (50, 100), font, 2, (0, 0, 255), 3)
         #new_frame[:] = (0, 0, 255) #blue
     elif 1 < average_gaze_ratio < 1.7:
-        cv2.putText(frame, "CENTER", (50, 100), font, 2, (0, 0, 255), 3) #black
+        gaze_direction = "CENTER"
+        time_diff, start_time = get_time_difference_while_gazing_in_progress(previous_gaze_direction, gaze_direction, start_time)
+        cv2.putText(frame, gaze_direction, (50, 100), font, 2, (0, 0, 255), 3) #black
     else:
         #new_frame[:] = (255, 0, 0) #red
-        cv2.putText(frame, "LEFT", (50, 100), font, 2, (0, 0, 255), 3)
+        gaze_direction = "LEFT"
+        time_diff, start_time = get_time_difference_while_gazing_in_progress(previous_gaze_direction, gaze_direction, start_time)
+        cv2.putText(frame, gaze_direction, (50, 100), font, 2, (0, 0, 255), 3)
+    #print((time_diff, start_time))
+    event_when_5ms_same_gaze_direction(time_diff)
+    return gaze_direction, start_time
         
 # Loop to perform the eye detection
 def eye_detection_loop(predictor, cap, detector):
@@ -184,7 +218,13 @@ def eye_detection_loop(predictor, cap, detector):
     # Landmark points for the eyes
     left_eye_points = (36, 37, 38, 39, 40, 41)
     right_eye_points = (42, 43, 44, 45, 46, 47)
-     
+
+    # Initialize previous_gaze_direction
+    previous_gaze_direction = "CENTER"
+
+    # Initialize start_time
+    start_time = current_time_milliseconds()
+
     while True:
 
         _,frame = cap.read()
@@ -216,7 +256,8 @@ def eye_detection_loop(predictor, cap, detector):
             # if person is 10s looking at one side, that side is selected.
             average_gaze_ratio = get_average_gaze_ratio(left_eye_points, right_eye_points, landmarks, frame, gray)
             #get_time_gazed_at_one_side()   
-            display_gaze_direction(average_gaze_ratio, frame, font)
+            gaze_direction, start_time = display_gaze_direction(average_gaze_ratio, frame, font, previous_gaze_direction, start_time)
+            previous_gaze_direction = gaze_direction
 
         # Display the image    
         cv2.imshow("Frame", frame)
