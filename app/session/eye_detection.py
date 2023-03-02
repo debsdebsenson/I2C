@@ -184,9 +184,11 @@ def get_time_difference_while_gazing_in_progress(previous_gaze_direction, gaze_d
     return time_diff, start_time
 
 # TBD: This is only a placeholder function and has to be replaced later on 
-def event_when_5ms_same_gaze_direction(time_diff):
+def event_when_5ms_same_gaze_direction(time_diff, gaze_direction):
     if time_diff >= 5000:
-        print(f"EVENT, gazed at one side for more tan 5s: {time_diff}")
+        print(f"EVENT, gazed at one side for more tan 5s: {time_diff}, {gaze_direction}")
+        # TBD: here the image that the person was looking  at for a certain
+        # amount of time must be selected - also this function needs to be renamed
 
 # In this function the gaze direction is displayed
 def display_gaze_direction(average_gaze_ratio, frame, font, previous_gaze_direction, start_time):
@@ -206,7 +208,7 @@ def display_gaze_direction(average_gaze_ratio, frame, font, previous_gaze_direct
         time_diff, start_time = get_time_difference_while_gazing_in_progress(previous_gaze_direction, gaze_direction, start_time)
         cv2.putText(frame, gaze_direction, (50, 100), font, 2, (0, 0, 255), 3)
     #print((time_diff, start_time))
-    event_when_5ms_same_gaze_direction(time_diff)
+    event_when_5ms_same_gaze_direction(time_diff, gaze_direction)
     return gaze_direction, start_time
         
 # Loop to perform the eye detection
@@ -297,4 +299,8 @@ def main_eye_detection():
     finish_webcam_session(cap)
 
 # call main function for the eye detection 
-main_eye_detection()
+
+if __name__ == '__main__':
+    main_eye_detection()
+    #app = ButtonimagesApp()
+    #app.run()
