@@ -12,12 +12,20 @@ from kivy.uix.button import Button
 # you can use 0 or 1 && True or False
 #Config.set('graphics', 'resizable', True)
 
+# Ensure a session can be closed by releasing the webcam
+#from eye_detection import finish_webcam_session
+#from eye_detection import get_camera_session
+#cap = get_camera_session()
+#finish_webcam_session(cap)
+
 # This layout allows you to set relative coordinates for children.
 from kivy.uix.relativelayout import RelativeLayout
 
 # BoxLayout arranges children in a vertical or horizontal box.
 # or help to put the children at the desired location.
 from kivy.uix.boxlayout import BoxLayout
+
+from eye_detection import current_time_milliseconds
 
 # creating the root widget used in .kv file
 class Buttonimages(BoxLayout):
@@ -55,9 +63,14 @@ class ButtonimagesApp(App):
         # adding button to widget
         rl.add_widget(b1)
         rl.add_widget(b2)
+        #print(current_time_milliseconds())
 
         return rl
+
+def test_fkt():
+    print("this is a test")
 
 if __name__ == '__main__':
     app = ButtonimagesApp()
     app.run()
+    #print(current_time_milliseconds())

@@ -18,7 +18,12 @@ import cv2 # For image processing
 import numpy as np
 import dlib # Detection of facial landmarks
 import os
-import time
+import time # For counting the time gazed at one side
+import pyautogui # For the mouse control - clicking on images
+
+#from buttonimages_app import test_fkt
+
+#test_fkt(cap)
 
 # Function to get the current time in milliseconds
 def current_time_milliseconds():
@@ -183,12 +188,40 @@ def get_time_difference_while_gazing_in_progress(previous_gaze_direction, gaze_d
         print(f"_____Changed gaze direction at {start_time}______________")
     return time_diff, start_time
 
+def click_on_selected_image(click_point):
+    print(f"Calculated click point (x, y): {click_point}")
+
+# Depnding on the gaze direction, the clickpoint on the screen is calculated
+# here.
+def calculate_click_point_on_screen(gaze_direction):
+
+    # Get screen size and assign the values to the parameters
+    screen_size = pyautogui.size()
+    screen_size_x = screen_size[0]
+    screen_size_y = screen_size[1]
+
+    click_point_y = int(screen_size_y / 2)
+
+    if gaze_direction == "LEFT":
+        click_point_x = int(screen_size_x * (1 / 4))
+    elif gaze_direction == "RIGHT":
+        click_point_x = int(screen_size_x * (3 / 4))
+    click_point = (click_point_x, click_point_y)
+    print(f"Size of the selected screen: {screen_size} and gaze_direction {gaze_direction}")
+    return click_point
+
 # TBD: This is only a placeholder function and has to be replaced later on 
-def event_when_5ms_same_gaze_direction(time_diff, gaze_direction):
+def event_when_5s_same_gaze_direction(time_diff, gaze_direction):
     if time_diff >= 5000:
         print(f"EVENT, gazed at one side for more tan 5s: {time_diff}, {gaze_direction}")
+        click_point = calculate_click_point_on_screen(gaze_direction)
+        click_on_selected_image(click_point)
+
+    """ def event_when_5ms_same_gaze_direction(time_diff, gaze_direction):
+        #click_on_selected_image()
+        calculate_click_point_on_screen(gaze_direction)
         # TBD: here the image that the person was looking  at for a certain
-        # amount of time must be selected - also this function needs to be renamed
+        # amount of time must be selected - also this function needs to be renamed """
 
 # In this function the gaze direction is displayed
 def display_gaze_direction(average_gaze_ratio, frame, font, previous_gaze_direction, start_time):
@@ -208,7 +241,7 @@ def display_gaze_direction(average_gaze_ratio, frame, font, previous_gaze_direct
         time_diff, start_time = get_time_difference_while_gazing_in_progress(previous_gaze_direction, gaze_direction, start_time)
         cv2.putText(frame, gaze_direction, (50, 100), font, 2, (0, 0, 255), 3)
     #print((time_diff, start_time))
-    event_when_5ms_same_gaze_direction(time_diff, gaze_direction)
+    event_when_5s_same_gaze_direction(time_diff, gaze_direction)
     return gaze_direction, start_time
         
 # Loop to perform the eye detection
@@ -227,9 +260,15 @@ def eye_detection_loop(predictor, cap, detector):
     # Initialize start_time
     start_time = current_time_milliseconds()
 
-    while True:
+    # Try to get the first frame, otherwise stop the session.
+    if cap.isOpened():
+        rval, frame = cap.read()
+    else:
+        rval = False
+        raise IOError("Cannot open webcam")
 
-        _,frame = cap.read()
+    while rval:
+        rval,frame = cap.read()
 
         # Change the color of the frame captured by webcam to gray
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -270,6 +309,7 @@ def eye_detection_loop(predictor, cap, detector):
 
         #close the webcam when escape key is pressed
         if cv2.waitKey(1) == 27:
+            finish_webcam_session(cap)
             break
 
 # Detect the face and then the area of the eye (therfore extract iris and 
@@ -280,6 +320,7 @@ def eye_detection(predictor, cap):
 
     # Detect the eye area
     eye_detection_loop(predictor, cap, detector)
+    finish_webcam_session(cap)
 
 # Function for releasing the webcam and closing all windows when session ends
 def finish_webcam_session(cap):
@@ -287,20 +328,28 @@ def finish_webcam_session(cap):
     cap.release()
     cv2.destroyAllWindows()
 
-def main_eye_detection():
-
+def main_eye_detection(cap):
     # For the detection of the facial landwark points
     predictor = dlib.shape_predictor(model_path())
 
     # Open webcab to capture the images, detect the eye and finish the session
     # afterwards.
-    cap = cv2.VideoCapture(0)
     eye_detection(predictor, cap)
     finish_webcam_session(cap)
 
-# call main function for the eye detection 
+def start_camera_session():
+    cap = cv2.VideoCapture(0)
+    return cap
 
+# call main function for the eye detection 
 if __name__ == '__main__':
-    main_eye_detection()
+
+    # Open the webcam first
+    cap = start_camera_session()
+
+    main_eye_detection(cap)
+
+    # Make sure the webcam session is really finished
+    finish_webcam_session(cap)
     #app = ButtonimagesApp()
     #app.run()
