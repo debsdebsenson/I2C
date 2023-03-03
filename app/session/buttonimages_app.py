@@ -23,17 +23,20 @@ from kivy.uix.relativelayout import RelativeLayout
 
 # BoxLayout arranges children in a vertical or horizontal box.
 # or help to put the children at the desired location.
-from kivy.uix.boxlayout import BoxLayout
+#from kivy.uix.boxlayout import BoxLayout
 
-from eye_detection import current_time_milliseconds
+""" # from eye_detection import current_time_milliseconds
+from eye_detection import start_camera_session
+from eye_detection import main_eye_detection
+from eye_detection import finish_webcam_session """
 
 # creating the root widget used in .kv file
-class Buttonimages(BoxLayout):
+""" class Buttonimages(BoxLayout):
     '''
         no need to do anything here as
         we are building things in .kv file
     '''
-    pass
+    pass """
 
 class ButtonimagesApp(App):
     def build(self):
@@ -67,10 +70,15 @@ class ButtonimagesApp(App):
 
         return rl
 
-def test_fkt():
-    print("this is a test")
+#def test_fkt():
+#    print("this is a test")
 
 if __name__ == '__main__':
     app = ButtonimagesApp()
     app.run()
+    """ cap = start_camera_session()
+    main_eye_detection(cap)
+
+    # Make sure the webcam session is really finished
+    finish_webcam_session(cap) """
     #print(current_time_milliseconds())

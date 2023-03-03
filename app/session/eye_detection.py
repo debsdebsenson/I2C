@@ -341,7 +341,7 @@ def start_camera_session():
     cap = cv2.VideoCapture(0)
     return cap
 
-# call main function for the eye detection 
+""" # call main function for the eye detection 
 if __name__ == '__main__':
 
     # Open the webcam first
@@ -352,4 +352,4 @@ if __name__ == '__main__':
     # Make sure the webcam session is really finished
     finish_webcam_session(cap)
     #app = ButtonimagesApp()
-    #app.run()
+    #app.run() """
