@@ -21,6 +21,8 @@ import os
 import time # For counting the time gazed at one side
 import pyautogui # For the mouse control - clicking on images
 
+from pynput import keyboard
+
 #from buttonimages_app import test_fkt
 
 #test_fkt(cap)
@@ -243,7 +245,14 @@ def display_gaze_direction(average_gaze_ratio, frame, font, previous_gaze_direct
     #print((time_diff, start_time))
     event_when_5s_same_gaze_direction(time_diff, gaze_direction)
     return gaze_direction, start_time
-        
+
+def key_detection(key):
+        #close the webcam when escape key is pressed
+        if key == keyboard.Key.esc:
+            # finish_webcam_session(cap)
+            #break
+            return False
+
 # Loop to perform the eye detection
 def eye_detection_loop(predictor, cap, detector):
 
@@ -266,16 +275,23 @@ def eye_detection_loop(predictor, cap, detector):
     else:
         rval = False
         raise IOError("Cannot open webcam")
+    
+    #callback = lambda key: key_detection(key, cap)
 
-    while rval:
-        rval,frame = cap.read()
+    # Collect events until released
+    listener = keyboard.Listener(on_press=key_detection)
+    listener.start()
+    # Run this block while listener (keypress) is alive, otherwise terminate
+    # this block.
+    while True:
+        _,frame = cap.read()
 
         # Change the color of the frame captured by webcam to gray
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # To detect faces from gray color frame
         faces = detector(gray)
-
+        #print("Test!")
         for face in faces:
             
             # Detection of the landmarks of a face
@@ -301,16 +317,19 @@ def eye_detection_loop(predictor, cap, detector):
             previous_gaze_direction = gaze_direction
 
         # Display the image    
-        cv2.imshow("Frame", frame)
+        #cv2.imshow("Frame", frame)
         #cv2.imshow("EYE",eye)
         #cv2.imshow("THRESHOLD",threshold_eye)
         #cv2.imshow("LEFT_EYE",left_eye)
         #cv2.imshow("mask",mask)
 
         #close the webcam when escape key is pressed
-        if cv2.waitKey(1) == 27:
+        if not listener.is_alive():
             finish_webcam_session(cap)
             break
+
+    # close keyboard listening thread
+    listener.join()
 
 # Detect the face and then the area of the eye (therfore extract iris and 
 def eye_detection(predictor, cap):
@@ -320,7 +339,6 @@ def eye_detection(predictor, cap):
 
     # Detect the eye area
     eye_detection_loop(predictor, cap, detector)
-    finish_webcam_session(cap)
 
 # Function for releasing the webcam and closing all windows when session ends
 def finish_webcam_session(cap):
@@ -335,13 +353,12 @@ def main_eye_detection(cap):
     # Open webcab to capture the images, detect the eye and finish the session
     # afterwards.
     eye_detection(predictor, cap)
-    finish_webcam_session(cap)
 
 def start_camera_session():
     cap = cv2.VideoCapture(0)
     return cap
 
-""" # call main function for the eye detection 
+# call main function for the eye detection 
 if __name__ == '__main__':
 
     # Open the webcam first
@@ -352,4 +369,4 @@ if __name__ == '__main__':
     # Make sure the webcam session is really finished
     finish_webcam_session(cap)
     #app = ButtonimagesApp()
-    #app.run() """
+    #app.run()
