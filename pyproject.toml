@@ -1,0 +1,50 @@
+[tool.flake8]
+# ignore = "Q000"
+extend-ignore = "E800, D104, E203, E501"
+# line length is intentionally set to 80 here because black uses Bugbear
+# See https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#line-length for more details
+max-line-length = 88
+max-complexity = 18
+select = "B,C,E,F,W,T4,B9,B950"
+inline-quotes = "double"
+multiline-quotes = "double"
+docstring-quotes = "double"
+max-try-body-length = 2
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+# A regex preceded with ^/ will apply only to files and directories
+# in the root of the project.
+# ^/foo.py  # exclude a file named foo.py in the root of the project (in addition to the defaults)
+# ^/it/migrations/.*\.py
+# migrations/.*\.py$
+\d{4}_.*\.py$
+'''
+safe = true
+skip-string-normalization = false
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+py_version=310
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+enable_error_code = [
+    "ignore-without-code"
+]
+show_error_codes = true
+warn_unused_ignores = true
+
+[tool.pyright]
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+pythonVersion = "3.10"
+pythonPlatform = "Linux"
+typeCheckingMode = "strict"
