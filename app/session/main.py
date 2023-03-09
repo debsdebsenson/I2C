@@ -1,11 +1,11 @@
 import threading
 
-from eye_detection import (
-    start_camera_session,
-    main_eye_detection,
-    finish_webcam_session,
-)
 from buttonimages_app import ButtonimagesApp
+from eye_detection import (
+    finish_webcam_session,
+    main_eye_detection,
+    start_camera_session,
+)
 
 
 def run_eyetracking():

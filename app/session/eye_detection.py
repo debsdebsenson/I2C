@@ -13,14 +13,14 @@ Right eye points: (42, 43, 44, 45, 46, 47)
 understanding dlib https://www.studytonight.com/post/dlib-68-points-face-landmark-detection-with-opencv-and-python
 """
 
-# importing modules which will be required for simple eye detection
-import cv2  # For image processing
-import numpy as np
-import dlib  # Detection of facial landmarks
 import os
 import time  # For counting the time gazed at one side
-import pyautogui  # For the mouse control - clicking on images
 
+# importing modules which will be required for simple eye detection
+import cv2  # For image processing
+import dlib  # Detection of facial landmarks
+import numpy as np
+import pyautogui  # For the mouse control - clicking on images
 from pynput import keyboard
 
 # from buttonimages_app import test_fkt

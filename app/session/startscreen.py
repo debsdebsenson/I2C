@@ -3,23 +3,21 @@
 # import kivy module
 # import kivy
 
+import time
+
+import pyautogui
+from eye_detection import current_time_milliseconds
 from kivy.app import App
-
-
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
+from kivy.uix.gridlayout import GridLayout
 
 # BoxLayout arranges children in a vertical or horizontal box.
 # or help to put the children at the desired location.
 # from kivy.uix.boxlayout import BoxLayout
 
-from eye_detection import current_time_milliseconds
 
 # from eye_detection import calculate_time_difference
 
-import pyautogui
-
-import time
 
 """
 from eye_detection import start_camera_session

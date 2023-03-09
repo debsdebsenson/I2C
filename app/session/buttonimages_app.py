@@ -1,7 +1,17 @@
 # import kivy module
 # import kivy
 
+import time
+
+from eye_detection import calculate_time_difference, current_time_milliseconds
 from kivy.app import App
+from kivy.uix.button import Button
+from kivy.uix.gridlayout import GridLayout
+
+# This layout allows you to set relative coordinates for children.
+# from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
 
 # from kivy.uix.image import Image
 
@@ -18,21 +28,11 @@ from kivy.app import App
 # cap = get_camera_session()
 # finish_webcam_session(cap)
 
-# This layout allows you to set relative coordinates for children.
-# from kivy.uix.relativelayout import RelativeLayout
-from kivy.uix.label import Label
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
 
 # BoxLayout arranges children in a vertical or horizontal box.
 # or help to put the children at the desired location.
 # from kivy.uix.boxlayout import BoxLayout
 
-from eye_detection import current_time_milliseconds
-from eye_detection import calculate_time_difference
-
-import time
 
 """
 from eye_detection import start_camera_session
