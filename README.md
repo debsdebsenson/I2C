@@ -40,29 +40,26 @@ purchased.
 
 ## Project content: in-scope and out-of-scope
 
-- **Projektinhalt:**\
-  Was ist alles Bestandteil (In-Scope)?
+- **In-Scope:**\
+  What is part of the project
 
 - **Out-of-Scope:**\
-  Das wird im Projekt nicht umgesetzt.
+  What is not part of the project and won't be implemented
 
 ## Requirements
 
-- Welche Anforderungen an das Projekt gibt es, die nicht unter In-Scope
-  aufgelistet worden sind?
+- Which requirements for the project are not listed in the *In-Scope* section?
 
 ### Milestones
 
-- Auflistung der Kern-Meilensteine, die bereits früh im Projekt bekannt oder
-  gesetzt worden sind.
+- List of primary milestones, known or set early
 
 ## Results
 
-- Woran wird erkannt, dass das Projekt erfolgreich beendet worden ist?
-- Welche Ergebnisse liegen dann vor?
+- How to detect the end of the prject?
+- How to recognize the results?
 
 ## Funding
 
 - German open source funding?
 - EU open source funding?
--
