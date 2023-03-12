@@ -136,9 +136,9 @@ def draw_cross(frame, array_eye_points):
 
 def left_right_side_division(threshold_eye):
     height, width = threshold_eye.shape
-    left_side_threshold = threshold_eye[0:height, 0 : int(width / 2)]
+    left_side_threshold = threshold_eye[0:height, 0:int(width / 2)]
     left_side_white = cv2.countNonZero(left_side_threshold)
-    right_side_threshold = threshold_eye[0:height, int(width / 2) : width]
+    right_side_threshold = threshold_eye[0:height, int(width / 2):width]
     right_side_white = cv2.countNonZero(right_side_threshold)
     return [left_side_white, right_side_white]
 
