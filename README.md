@@ -19,9 +19,10 @@ There are already solutions for people who can use writing as a means of
 communication, but no equivalent interface for the use of images.
 
 ## Project background / initial situation
-
+    
 This project is started because there are no practicable solutions for this kind
-of communication so far.
+of communication so far. This is intended to provide non-verbal communication 
+using images.
 
 ## Project goals and non-goals
 
