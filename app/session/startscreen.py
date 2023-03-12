@@ -1,46 +1,45 @@
 # events: https://kivy.org/doc/stable/guide/events.html
 
-# import kivy module   
-#import kivy 
+# import kivy module
+# import kivy
 
+import time
+
+import pyautogui
+from eye_detection import current_time_milliseconds
 from kivy.app import App
-
-
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
+from kivy.uix.gridlayout import GridLayout
 
 # BoxLayout arranges children in a vertical or horizontal box.
 # or help to put the children at the desired location.
-#from kivy.uix.boxlayout import BoxLayout
+# from kivy.uix.boxlayout import BoxLayout
 
-from eye_detection import current_time_milliseconds
-#from eye_detection import calculate_time_difference
 
-import pyautogui
+# from eye_detection import calculate_time_difference
 
-import time
 
 """
 from eye_detection import start_camera_session
 from eye_detection import main_eye_detection
 from eye_detection import finish_webcam_session """
 
-class StartScreenLayout(GridLayout):
 
+class StartScreenLayout(GridLayout):
     # Constructor which takes x keyword arguments as input.
     def __init__(self, **kwargs):
-
         # This is how an event can be triggered
-        self.register_event_type('on_test')
+        self.register_event_type("on_test")
 
         super(StartScreenLayout, self).__init__(**kwargs)
-        self.cols = 1        
+        self.cols = 1
 
-        self.b1 = Button(text ="Wanna Start?",
-                     color =(1, 0, .65, 1),
-                     size_hint = (.49, .49),
-                     pos_hint = {'left':1, 'center_y':.5}
-                   )
+        self.b1 = Button(
+            text="Wanna Start?",
+            color=(1, 0, 0.65, 1),
+            size_hint=(0.49, 0.49),
+            pos_hint={"left": 1, "center_y": 0.5},
+        )
 
         # Add an event when this button is pressed
         self.b1.bind(on_press=self.pressed_button)
@@ -61,7 +60,7 @@ class StartScreenLayout(GridLayout):
 
     def calc_click_point(self):
         screen_size = pyautogui.size()
-        #print(screen_size)
+        # print(screen_size)
         screen_size_x = screen_size[0]
         screen_size_y = screen_size[1]
 
@@ -74,14 +73,14 @@ class StartScreenLayout(GridLayout):
     def do_something(self):
         # when do_something is called, the 'on_test' event will be
         # dispatched with the value
-        #self.dispatch('on_test')
+        # self.dispatch('on_test')
         click_point = self.calc_click_point()
-        #time.sleep(10)
-        #pyautogui.click(click_point)
+        # time.sleep(10)
+        # pyautogui.click(click_point)
         print(click_point)
 
     def on_test(self, *args):
-        #print("I am dispatched", args)
+        # print("I am dispatched", args)
         print("____________________________")
         print(current_time_milliseconds())
         time.sleep(0.1)
@@ -90,19 +89,21 @@ class StartScreenLayout(GridLayout):
 
     def my_callback(self, instance):
         print("Hello, I got an event!")
-        #instance.pressed_start
+        # instance.pressed_start
+
 
 class StartScreenApp(App):
     def build(self):
         ev = StartScreenLayout()
 
         # Binds on_test method and my_callback method together
-        #ev.bind(on_test=ev.my_callback)
+        # ev.bind(on_test=ev.my_callback)
 
         # just call any method on the ev object
         ev.do_something()
         return ev
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app = StartScreenApp()
     app.run()
