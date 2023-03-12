@@ -53,7 +53,11 @@ purchased.
 
 ### Milestones
 
-- List of primary milestones, known or set early
+* Build part of the app for the actual session (MWE incl. GUI, menu, eye tracking - also working if only one eye is visible & other corner cases).
+* Write tests for this part of the programme
+* Internal QA of this part of the programme
+* Implement improvements and fix bugs
+* Verification of this part of the application - real life QA
 
 ## Results
 
