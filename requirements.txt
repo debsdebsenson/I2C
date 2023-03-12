@@ -30,3 +30,4 @@ SQLAlchemy==1.4.46
 typing_extensions==4.4.0
 urllib3==1.26.14
 virtualenv==20.20.0
+opencv-python==4.7.0.72
