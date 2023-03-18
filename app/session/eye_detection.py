@@ -276,6 +276,10 @@ def event_when_5s_same_gaze_direction(time_diff, gaze_direction):
         print(
             f"EVENT, gazed at one side for more tan 5s: {time_diff}, {gaze_direction}",
         )
+
+        ### !!!!!!!!!!!!! Here the gaze_direction needs to trigger to select to come to the "next page" -
+        # here something like a "screen_level" parameter would be good to select the number of shown images !!!!!!!!!!!
+
         click_point = calculate_click_point_on_screen(gaze_direction)
         click_on_selected_image(click_point)
 
