@@ -1,109 +1,47 @@
-# events: https://kivy.org/doc/stable/guide/events.html
-
-# import kivy module
-# import kivy
-
-import time
-
-import pyautogui
-from eye_detection import current_time_milliseconds
+import kivy
 from kivy.app import App
 from kivy.uix.button import Button
-from kivy.uix.gridlayout import GridLayout
-
-# BoxLayout arranges children in a vertical or horizontal box.
-# or help to put the children at the desired location.
-# from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.image import Image
 
 
-# from eye_detection import calculate_time_difference
-
-
-"""
-from eye_detection import start_camera_session
-from eye_detection import main_eye_detection
-from eye_detection import finish_webcam_session """
-
-
-class StartScreenLayout(GridLayout):
-    # Constructor which takes x keyword arguments as input.
+class  StartScreen(FloatLayout):
     def __init__(self, **kwargs):
-        # This is how an event can be triggered
-        self.register_event_type("on_test")
+        super( StartScreen, self).__init__(**kwargs)
 
-        super(StartScreenLayout, self).__init__(**kwargs)
-        self.cols = 1
+        # Define buttons
+        self.btn1 = Button(text='Select a session')
+        self.btn2 = Button(text='Close application')
 
-        self.b1 = Button(
-            text="Wanna Start?",
-            color=(1, 0, 0.65, 1),
-            size_hint=(0.49, 0.49),
-            pos_hint={"left": 1, "center_y": 0.5},
-        )
+        # Set the size and position of the buttons
+        self.btn1.size_hint = (0.5, 0.3)
+        self.btn1.pos_hint = {'center_x': 0.5, 'center_y': 0.7}
+        self.btn2.size_hint = (0.5, 0.3)
+        self.btn2.pos_hint = {'center_x': 0.5, 'center_y': 0.3}
 
-        # Add an event when this button is pressed
-        self.b1.bind(on_press=self.pressed_button)
-        self.add_widget(self.b1)
+        # bind button callbacks
+        self.btn1.bind(on_press=self.show_image)
+        self.btn2.bind(on_press=self.close_app)
 
-        """     def click_on_selected_image():
-        screen_size = pyautogui.size()
-        screen_size_x = screen_size[0]
-        screen_size_y = screen_size[1]
-
-        click_point_y = int(screen_size_y / 2)
-        click_point_x = int(screen_size_x / 2)
-        click_point = (click_point_x, click_point_y)
-        print(f"Calculated click point (x, y): {click_point}") """
-
-    def pressed_button(self, instance):
-        print("Button Pressed")
-
-    def calc_click_point(self):
-        screen_size = pyautogui.size()
-        # print(screen_size)
-        screen_size_x = screen_size[0]
-        screen_size_y = screen_size[1]
-
-        click_point_y = int(screen_size_y / 2)
-        click_point_x = int(screen_size_x / 2)
-        click_point = (click_point_x, click_point_y)
-        print(f"Calculated click point (x, y): {click_point}")
-        return click_point
-
-    def do_something(self):
-        # when do_something is called, the 'on_test' event will be
-        # dispatched with the value
-        # self.dispatch('on_test')
-        click_point = self.calc_click_point()
-        # time.sleep(10)
-        # pyautogui.click(click_point)
-        print(click_point)
-
-    def on_test(self, *args):
-        # print("I am dispatched", args)
-        print("____________________________")
-        print(current_time_milliseconds())
-        time.sleep(0.1)
-        print(current_time_milliseconds())
-        print("____________________________")
-
-    def my_callback(self, instance):
-        print("Hello, I got an event!")
-        # instance.pressed_start
+        # Add the buttons to the layout
+        self.add_widget(self.btn1)
+        self.add_widget(self.btn2)
 
 
-class StartScreenApp(App):
+    # TBD: Here another menu is to be set up where the sessions can be selected
+    def show_image(self, instance):
+        self.clear_widgets()
+        self.add_widget(Image(source="../images/placeholder1.png", size_hint=(1, 1)))
+
+    # Close the app
+    def close_app(self, instance):
+        App.get_running_app().stop()
+
+
+class I2CApp(App):
     def build(self):
-        ev = StartScreenLayout()
-
-        # Binds on_test method and my_callback method together
-        # ev.bind(on_test=ev.my_callback)
-
-        # just call any method on the ev object
-        ev.do_something()
-        return ev
+        return  StartScreen()
 
 
-if __name__ == "__main__":
-    app = StartScreenApp()
-    app.run()
+if __name__ == '__main__':
+    I2CApp().run()
