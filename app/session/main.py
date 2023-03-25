@@ -1,3 +1,17 @@
+"""
+Here a Kivy application with two screens managed by a ScreenManager is.
+
+The first screen is called StartScreen and has two buttons: "Select a session"
+and "Close application". When the "Select a session" button is pressed, it
+calls the switch_to_next_view method, which switches the current screen to the
+second screen, called SessionManagement, using the current attribute of the
+ScreenManager. When the "Close application" button is pressed, it calls the
+close_app method, which stops the Kivy application.
+The second screen is called SessionManagement and is defined in a separate file
+called "session_management_screen.py", which is imported at the beginning of
+the code.
+"""
+
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.app import App
 
