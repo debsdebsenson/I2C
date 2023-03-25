@@ -12,15 +12,20 @@ called "session_management_screen.py", which is imported at the beginning of
 the code.
 """
 
+# Kivy modules imports
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.app import App
-
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.clock import Clock
 
+# Internal imports
 from session_management_screen import SessionManagement
 
+
+# This class sets up the layout of the first screen with two buttons and
+# handles the button press events to switch to the next screen or close the
+# application.
 class  StartScreen(FloatLayout):
     def __init__(self, **kwargs):
         super( StartScreen, self).__init__(**kwargs)
@@ -43,10 +48,13 @@ class  StartScreen(FloatLayout):
         self.add_widget(self.btn1)
         self.add_widget(self.btn2)
 
+    # Implementation of a little delay before opening the next page 
     def btn1_behaviour(self, *args):
+
         # Clock.schedule_once(<action>, <delay time in s>)
         Clock.schedule_once(self.switch_to_next_view, 0.1)
 
+    # Switch to the next screen view/page
     def switch_to_next_view(self, *args):
         app.screen_manager.current = 'sessionManagement'
 
@@ -54,7 +62,15 @@ class  StartScreen(FloatLayout):
     def close_app(self, instance):
         App.get_running_app().stop()
 
+
+# The I2CApp class inherits from the App class in Kivy and is responsible for
+# building and running the application.
 class I2CApp(App):
+
+    # The build function is responsible for setting up the user interface by
+    # creating the ScreenManager and adding the necessary widgets to it, which
+    # allows the user to interact with the application through the screens
+    # defined in the StartScreen and SessionManagement classes.
     def build(self):
         self.screen_manager = ScreenManager()
         self.start_screen = StartScreen()
@@ -70,6 +86,7 @@ class I2CApp(App):
         return self.screen_manager
 
 
+# Main function
 if __name__ == '__main__':
     app = I2CApp()
     app.run()
