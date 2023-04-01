@@ -10,18 +10,18 @@ from kivy.clock import Clock
 # information about kivy.storage: https://kivy.org/doc/stable/api-kivy.storage.html#module-kivy.storage
 from kivy.storage.jsonstore import JsonStore
 
-class ScrollableFieldApp(App):
+
+class ScrollableField(BoxLayout):
     
-    def build(self):
-        # Create the main layout of the app
-        layout = BoxLayout(orientation='vertical')
-        
+    def __init__(self, **var_args):
+        super(ScrollableField, self).__init__(**var_args)
+
         # Create the scrollable field and add it to the layout
         scroll_view = ScrollView()
         scroll_layout = BoxLayout(orientation='vertical', size_hint_y=None, spacing=5)
         scroll_layout.bind(minimum_height=scroll_layout.setter('height'))
         scroll_view.add_widget(scroll_layout)
-        layout.add_widget(scroll_view)
+        self.add_widget(scroll_view)
 
         # TBD: Load the session_data from the JSON file and create the placeholder text labels and delete buttons
         # + if this file does not exist throw error (try catch block)
@@ -29,45 +29,38 @@ class ScrollableFieldApp(App):
 
         #session_data_json.put('tito', name='Mathieu', age=30)
         session_information = ['Other Session', 'Some stuff', '2022-01-10']
-        change_session_data = 'Other Session', 'date', '2012-04-20'
+        #change_session_data = 'Other Session', 'date', '2012-04-20'
         #del_session = session_information[0]
 
         self.add_session_data_to_json(session_data_json, session_information)
 
-        print("_______________________________")
+        """ print("_______________________________")
         self.print_session_data_from_json(session_data_json, 'Other Session', 'date')
         self.print_session_data_from_json(session_data_json, 'Other Session', 'date')
         #self.remove_session_data_from_json(session_data_json, del_session)
         self.rename_session_data_in_json(session_data_json, change_session_data)
         self.print_session_data_from_json(session_data_json, 'Other Session', 'date')
-        print("_______________________________")
+        print("_______________________________") """
         
         for text in session_data_json:
             row_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
             row_layout.add_widget(Label(text=text))
             row_layout.add_widget(Button(text="Delete", on_press=self.delete_row))
             scroll_layout.add_widget(row_layout)
-        
-        """         # Create some placeholder text labels and delete buttons
-        for i in range(20):
-            row_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
-            row_layout.add_widget(Label(text=f"Row {i+1}"))
-            row_layout.add_widget(Button(text="Delete", on_press=self.delete_row))
-            scroll_layout.add_widget(row_layout) """
-        
-        # Create the input field and the "create" button
+
+        # Create the label for displaying session name creation
+        layout = BoxLayout(orientation='vertical')
+        self.session_label = Label(text="", color=[1, 0, 0, 1], size_hint=[None, None], size=[300, 50], pos=[800, 550])
+        layout.add_widget(self.session_label)
+        self.add_widget(layout)
+
         input_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
         input_field = TextInput(multiline=False)
         input_layout.add_widget(input_field)
-        input_layout.add_widget(Button(text="Create", on_press=lambda x: self.create_row(input_field, scroll_layout)))
-        layout.add_widget(input_layout)
-        
-        # Create the label for displaying session name creation
-        self.session_label = Label(text="", color=[1, 0, 0, 1], size_hint=[None, None], size=[300, 50], pos=[800, 550])
-        layout.add_widget(self.session_label)
-        
-        return layout
-    
+        input_layout.add_widget(Button(text="Create", on_press=lambda x: self.create_row(input_field, scroll_layout, self.session_label)))
+        self.add_widget(input_layout)
+
+
     # Method for printing specific sesion data
     # This method is mainly for debugging, can be deleted later
     def print_session_data_from_json(self, session_data_json, session_name, parameter_to_be_printed):
@@ -130,7 +123,7 @@ class ScrollableFieldApp(App):
         scroll_layout.remove_widget(row_layout)
         confirm_popup.dismiss()
     
-    def create_row(self, input_field, scroll_layout):
+    def create_row(self, input_field, scroll_layout, session_label):
         # Create a new row with the text from the input field and add it to the scrollable field
         text = input_field.text
 
@@ -142,11 +135,8 @@ class ScrollableFieldApp(App):
         scroll_layout.add_widget(row_layout)
         
         # Display the session creation confirmation message for 5 seconds
-        self.session_label.text = f"Session {text} successfully created"
+        session_label.text = f"Session {text} successfully created"
         Clock.schedule_once(self.clear_session_label, 5)
     
     def clear_session_label(self, dt):
         self.session_label.text = ""
-
-if __name__ == '__main__':
-    ScrollableFieldApp().run()
