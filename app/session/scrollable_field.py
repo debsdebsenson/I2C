@@ -6,8 +6,9 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
 from kivy.uix.popup import Popup
 from kivy.clock import Clock
-import json
 
+from kivy.storage.jsonstore import JsonStore
+# import json
 
 class ScrollableFieldApp(App):
     
@@ -22,10 +23,14 @@ class ScrollableFieldApp(App):
         scroll_view.add_widget(scroll_layout)
         layout.add_widget(scroll_view)
 
-        # TBD: Load the data from the JSON file and create the placeholder text labels and delete buttons
-        with open('./app/session/data.json', 'r') as f:
-            data = json.load(f)
-        for text in data:
+        # TBD: Load the session_data from the JSON file and create the placeholder text labels and delete buttons
+        # + if this file does not exist throw error (try catch block)
+        session_data_json = JsonStore('./app/session/data.json')
+        print("_______________________________")
+        self.print_session_data_from_json(session_data_json, 'Session 1', 'date')
+        print("_______________________________")
+        
+        for text in session_data_json:
             row_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
             row_layout.add_widget(Label(text=text))
             row_layout.add_widget(Button(text="Delete", on_press=self.delete_row))
@@ -51,6 +56,16 @@ class ScrollableFieldApp(App):
         
         return layout
     
+    # Methos for printing specific sesion data
+    # TBD: this method is mainly for debugging, can be deleted later
+    def print_session_data_from_json(self, session_data_json, session_name, parameter_to_be_printed):
+        print(f'Parameter "{parameter_to_be_printed}" of Session "{session_name}" is:', session_data_json.get(session_name)[parameter_to_be_printed])
+
+    # TBD: Method for Adding Sessions to the data.json file
+    #def add_session_data_to_json(self, session_data_json, session_information):
+    
+    # TBD: Method for renaiming sessions
+
     def delete_row(self, instance):
         # TBD: Write some text to the confirm deletion box
         # Ask for confirmation before deleting the row
