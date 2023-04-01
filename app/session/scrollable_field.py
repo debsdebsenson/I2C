@@ -29,11 +29,14 @@ class ScrollableFieldApp(App):
 
         #session_data_json.put('tito', name='Mathieu', age=30)
         session_information = ['Other Session', 'Some stuff', '2022-01-10']
+        del_session = session_information[0]
+
         self.add_session_data_to_json(session_data_json, session_information)
 
         print("_______________________________")
         self.print_session_data_from_json(session_data_json, 'Other Session', 'date')
         #self.print_session_data_from_json(session_data_json, 'Session 1', 'date')
+        self.remove_session_data_from_json(session_data_json, del_session)
         print("_______________________________")
         
         for text in session_data_json:
@@ -63,7 +66,7 @@ class ScrollableFieldApp(App):
         return layout
     
     # Method for printing specific sesion data
-    # TBD: this method is mainly for debugging, can be deleted later
+    # This method is mainly for debugging, can be deleted later
     def print_session_data_from_json(self, session_data_json, session_name, parameter_to_be_printed):
         print(f'Parameter "{parameter_to_be_printed}" of Session "{session_name}" is:', session_data_json.get(session_name)[parameter_to_be_printed])
 
@@ -75,7 +78,13 @@ class ScrollableFieldApp(App):
         date_data= session_information[2]
         session_data_json.put(session_name, placehoholder_parameter=parameterA_data, date=date_data)
     
-    #def remove_session_data_from_json(self, session_data_json, session_information):
+    # Method for removing entries from the json file
+    def remove_session_data_from_json(self, session_data_json, del_session):
+        if session_data_json.exists(del_session):
+            print(f'Remove session "{del_session}" with entries:', session_data_json.get(del_session))
+            session_data_json.delete(del_session)
+
+    # TBD: Method for renaiming sessions
 
     # Method for finding an entry
     """ # or guess the key/entry for a part of the key
@@ -89,8 +98,6 @@ class ScrollableFieldApp(App):
     print('tite exists:', store.get('tito'))
     store.delete('tito')
     """
-
-    # TBD: Method for renaiming sessions
 
     def delete_row(self, instance):
         # TBD: Write some text to the confirm deletion box
