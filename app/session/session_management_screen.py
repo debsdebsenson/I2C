@@ -8,4 +8,6 @@ class SessionManagement(GridLayout):
         super(SessionManagement, self).__init__(**var_args)
 
         self.cols = 1
+
+        # Here the scrollable_field will be called at the end
         self.add_widget(Label(text='Hello World'))
