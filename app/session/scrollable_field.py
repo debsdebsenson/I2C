@@ -26,8 +26,14 @@ class ScrollableFieldApp(App):
         # TBD: Load the session_data from the JSON file and create the placeholder text labels and delete buttons
         # + if this file does not exist throw error (try catch block)
         session_data_json = JsonStore('./app/session/data.json')
+
+        #session_data_json.put('tito', name='Mathieu', age=30)
+        session_information = ['Other Session', 'Some stuff', '2022-01-10']
+        self.add_session_data_to_json(session_data_json, session_information)
+
         print("_______________________________")
-        self.print_session_data_from_json(session_data_json, 'Session 1', 'date')
+        self.print_session_data_from_json(session_data_json, 'Other Session', 'date')
+        #self.print_session_data_from_json(session_data_json, 'Session 1', 'date')
         print("_______________________________")
         
         for text in session_data_json:
@@ -56,14 +62,34 @@ class ScrollableFieldApp(App):
         
         return layout
     
-    # Methos for printing specific sesion data
+    # Method for printing specific sesion data
     # TBD: this method is mainly for debugging, can be deleted later
     def print_session_data_from_json(self, session_data_json, session_name, parameter_to_be_printed):
         print(f'Parameter "{parameter_to_be_printed}" of Session "{session_name}" is:', session_data_json.get(session_name)[parameter_to_be_printed])
 
-    # TBD: Method for Adding Sessions to the data.json file
-    #def add_session_data_to_json(self, session_data_json, session_information):
+    # Method for Adding Sessions to the data.json file
+    # session_information is a list
+    def add_session_data_to_json(self, session_data_json, session_information):
+        session_name = session_information[0]
+        parameterA_data = session_information[1]
+        date_data= session_information[2]
+        session_data_json.put(session_name, placehoholder_parameter=parameterA_data, date=date_data)
     
+    #def remove_session_data_from_json(self, session_data_json, session_information):
+
+    # Method for finding an entry
+    """ # or guess the key/entry for a part of the key
+    def find_session_key_from_json(self, session_data_json, input_to_search_for):
+        for item in store.find(name='Gabriel'):
+            print('tshirtmans index key is', item[0])
+            print('his key value pairs are', str(item[1])) """
+    """
+    # or something like this:
+    if store.exists('tito'):
+    print('tite exists:', store.get('tito'))
+    store.delete('tito')
+    """
+
     # TBD: Method for renaiming sessions
 
     def delete_row(self, instance):
