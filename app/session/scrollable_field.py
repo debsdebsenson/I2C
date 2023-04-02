@@ -36,14 +36,13 @@ class ScrollableField(BoxLayout):
         scroll_view.add_widget(scroll_layout)
         self.add_widget(scroll_view)
 
-        # TBD: Load the session_data from the JSON file and create the placeholder text labels and delete buttons
-        # + if this file does not exist throw error (try catch block)
+        # TBD: try catch - on all critical methods and calls of methods
         session_data_json = self.load_data_from_json()
         
         for text in session_data_json:
-            row_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
-            row_layout.add_widget(Label(text=text))
             session_name=text
+            row_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
+            row_layout.add_widget(Button(text=text, background_color=[0, 0, 0, 0], on_press=lambda instance: self.go_to_session_menu()))
             row_layout.add_widget(Button(text="Delete", on_press=lambda instance: self.delete_session_in_overview_screen(instance, session_name)))
             scroll_layout.add_widget(row_layout)
 
@@ -64,6 +63,12 @@ class ScrollableField(BoxLayout):
         input_layout.add_widget(create_button)
         self.add_widget(input_layout)
 
+    """%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    Go to session menu
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"""
+
+    def go_to_session_menu(self):
+        print("Placeholder - from here change to the session menu")
 
     """%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     JSON connected methods
