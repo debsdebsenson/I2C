@@ -7,6 +7,8 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.popup import Popup
 from kivy.clock import Clock
 
+from datetime import datetime
+
 # information about kivy.storage: https://kivy.org/doc/stable/api-kivy.storage.html#module-kivy.storage
 from kivy.storage.jsonstore import JsonStore
 
@@ -46,7 +48,7 @@ class ScrollableField(BoxLayout):
         input_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
         input_field = TextInput(multiline=False)
         input_layout.add_widget(input_field)
-        input_layout.add_widget(Button(text="Create", on_press=lambda x: self.create_row(input_field, scroll_layout, self.session_label)))
+        input_layout.add_widget(Button(text="Create", on_press=lambda x: self.create_session(input_field, scroll_layout, self.session_label)))
         self.add_widget(input_layout)
 
     """%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -129,10 +131,9 @@ class ScrollableField(BoxLayout):
 
         confirm_popup.dismiss()
     
-    def create_row(self, input_field, scroll_layout, session_label):
+    def create_session(self, input_field, scroll_layout, session_label):
         # Create a new row with the text from the input field and add it to the scrollable field
         text = input_field.text
-        session_name=text
 
         # Clear the input field after creating the new row
         input_field.text = ''
@@ -140,6 +141,15 @@ class ScrollableField(BoxLayout):
         row_layout.add_widget(Label(text=text))
         row_layout.add_widget(Button(text="Delete", on_press=lambda instance: self.delete_session_in_overview_screen(instance, session_name)))
         scroll_layout.add_widget(row_layout)
+
+        # Add session to JSON storage file
+        session_information=[]
+        session_data_json = self.load_data_from_json()
+        date_data = datetime.today().strftime('%Y-%m-%d')
+        parameterA_data='Placehoholder X'
+        session_name=text
+        session_information = [session_name, parameterA_data, date_data]
+        self.add_session_data_to_json(session_data_json, session_information)
         
         # Display the session creation confirmation message for 5 seconds
         session_label.text = f"Session {text} successfully created"
