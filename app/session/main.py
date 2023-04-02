@@ -31,8 +31,8 @@ class  StartScreen(FloatLayout):
         super( StartScreen, self).__init__(**kwargs)
 
         # Define buttons
-        self.btn1 = Button(text='Select a session')
-        self.btn2 = Button(text='Close application')
+        self.btn1 = Button(text='Start')
+        self.btn2 = Button(text='Exit')
 
         # Set the size and position of the buttons
         self.btn1.size_hint = (0.5, 0.3)

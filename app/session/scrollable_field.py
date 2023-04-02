@@ -1,3 +1,8 @@
+"""
+Here you find the code for the second screen, the menu where Sessions can be
+started, created and deleted from.
+"""
+
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
