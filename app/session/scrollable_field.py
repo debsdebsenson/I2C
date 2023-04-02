@@ -67,6 +67,8 @@ class ScrollableField(BoxLayout):
     Go to session menu
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"""
 
+    # In this function a switch to the session menu is triggered
+    # TBD: how can this be implemented with the screen manager???
     def go_to_session_menu(self):
         print("Placeholder - from here change to the session menu")
 
