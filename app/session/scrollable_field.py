@@ -95,18 +95,6 @@ class ScrollableField(BoxLayout):
             print(f'Remove session "{name_of_del_session}" with entries:', session_data_json.get(name_of_del_session))
             session_data_json.delete(name_of_del_session)
 
-    # TBD: Finish method for renaiming sessions - not yet working as intended,
-    # very static - it seems like there is no possibility to change entries
-    # implemented in kivy
-    def rename_session_data_in_json(self, session_data_json, session_information):
-        # Unpack data from session_information list
-        session_name = session_information[0]
-        parameter_to_be_changed = session_information[1]
-        new_session_data_value = session_information[2]
-        if session_data_json.exists(session_name): #& session_data_json.exists(parameter_to_be_changed):
-            print(f'Rename parameter in session "{session_name}". Change "{parameter_to_be_changed}" from {session_data_json.get(session_name)[parameter_to_be_changed]} to "{new_session_data_value}".')
-            session_data_json.put(session_name, date=new_session_data_value)
-
     # Method for finding an entry
     """ # or guess the key/entry for a part of the key
     def find_session_key_from_json(self, session_data_json, input_to_search_for):
@@ -178,3 +166,20 @@ class ScrollableField(BoxLayout):
     
     def clear_session_label(self, dt):
         self.session_label.text = ""
+
+
+"""
+# TBD: think about this!: Should this be implemented to be called within the sessions itself or also on the scrollable field?
+
+    # TBD: Finish method for renaiming sessions - not yet working as intended,
+    # very static - it seems like there is no possibility to change entries
+    # implemented in kivy
+    def rename_session_data_in_json(self, session_data_json, session_information):
+        # Unpack data from session_information list
+        session_name = session_information[0]
+        parameter_to_be_changed = session_information[1]
+        new_session_data_value = session_information[2]
+        if session_data_json.exists(session_name): #& session_data_json.exists(parameter_to_be_changed):
+            print(f'Rename parameter in session "{session_name}". Change "{parameter_to_be_changed}" from {session_data_json.get(session_name)[parameter_to_be_changed]} to "{new_session_data_value}".')
+            session_data_json.put(session_name, date=new_session_data_value)
+"""
