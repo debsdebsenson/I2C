@@ -28,31 +28,13 @@ class ScrollableField(BoxLayout):
 
         # TBD: Load the session_data from the JSON file and create the placeholder text labels and delete buttons
         # + if this file does not exist throw error (try catch block)
-        #session_data_json = JsonStore('./app/session/data.json')
         session_data_json = self.load_data_from_json()
-
-        #session_data_json.put('tito', name='Mathieu', age=30)
-        #session_information = ['Other Session', 'Some stuff', '2022-01-10']
-        #change_session_data = 'Other Session', 'date', '2012-04-20'
-        #del_session = session_information[0]
-
-        #self.add_session_data_to_json(session_data_json, session_information)
-
-        """ print("_______________________________")
-        self.print_session_data_from_json(session_data_json, 'Other Session', 'date')
-        self.print_session_data_from_json(session_data_json, 'Other Session', 'date')
-        #self.remove_session_data_from_json(session_data_json, del_session)
-        self.rename_session_data_in_json(session_data_json, change_session_data)
-        self.print_session_data_from_json(session_data_json, 'Other Session', 'date')
-        print("_______________________________") """
         
         for text in session_data_json:
             row_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
             row_layout.add_widget(Label(text=text))
             session_name=text
             row_layout.add_widget(Button(text="Delete", on_press=lambda instance: self.delete_session_in_overview_screen(instance, session_name)))
-
-            #row_layout.add_widget(Button(text="Delete", on_press=self.delete_session_in_overview_screen(row_layout, session_name)))
             scroll_layout.add_widget(row_layout)
 
         # Create the label for displaying session name creation
