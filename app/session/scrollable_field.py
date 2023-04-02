@@ -137,32 +137,33 @@ class ScrollableField(BoxLayout):
         confirm_popup.dismiss()
     
     def create_session(self, input_field, scroll_layout, session_label):
-        # Create a new row with the text from the input field and add it to the scrollable field
-        text = input_field.text
+        # Get the text from the input field
+        text = input_field.text.strip()
 
-        # Clear the input field after creating the new row
-        input_field.text = ''
-        row_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
-        row_layout.add_widget(Label(text=text))
-        row_layout.add_widget(Button(text="Delete", on_press=lambda instance: self.delete_session_in_overview_screen(instance, session_name)))
-        scroll_layout.add_widget(row_layout)
+        # Only add the text if it is not empty
+        if text:
+            # Clear the input field after creating the new row
+            input_field.text = ''
+            row_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
+            row_layout.add_widget(Label(text=text))
+            row_layout.add_widget(Button(text="Delete", on_press=lambda instance: self.delete_session_in_overview_screen(instance, session_name)))
+            scroll_layout.add_widget(row_layout)
 
-        # Add session to JSON storage file
-        session_information=[]
-        session_data_json = self.load_data_from_json()
-        date_data = datetime.today().strftime('%Y-%m-%d')
-        empty_list=[]
-        session_name=text
-        session_information = [session_name, empty_list, date_data]
-        self.add_session_data_to_json(session_data_json, session_information)
+            # Add session to JSON storage file
+            session_information=[]
+            session_data_json = self.load_data_from_json()
+            date_data = datetime.today().strftime('%Y-%m-%d')
+            empty_list=[]
+            session_name=text
+            session_information = [session_name, empty_list, date_data]
+            self.add_session_data_to_json(session_data_json, session_information)
 
-        # In ths method the JSOn content is restructured for increasing
-        # readability
-        self.pretty_restructuring_json_content()
-        
-        # Display the session creation confirmation message for 5 seconds
-        session_label.text = f"Session {text} successfully created"
-        Clock.schedule_once(self.clear_session_label, 5)
+            # Increasing readability of JSON file: output = data_pretty.json
+            self.pretty_restructuring_json_content()
+            
+            # Display the session creation confirmation message for 5 seconds
+            session_label.text = f"Session {text} successfully created"
+            Clock.schedule_once(self.clear_session_label, 5)
     
     def clear_session_label(self, dt):
         self.session_label.text = ""
