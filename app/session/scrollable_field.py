@@ -10,6 +10,7 @@ from kivy.clock import Clock
 # information about kivy.storage: https://kivy.org/doc/stable/api-kivy.storage.html#module-kivy.storage
 from kivy.storage.jsonstore import JsonStore
 
+JSON_FILEPATH='./app/session/data.json'
 
 class ScrollableField(BoxLayout):
     
@@ -27,14 +28,15 @@ class ScrollableField(BoxLayout):
 
         # TBD: Load the session_data from the JSON file and create the placeholder text labels and delete buttons
         # + if this file does not exist throw error (try catch block)
-        session_data_json = JsonStore('./app/session/data.json')
+        #session_data_json = JsonStore('./app/session/data.json')
+        session_data_json = self.load_data_from_json()
 
         #session_data_json.put('tito', name='Mathieu', age=30)
-        session_information = ['Other Session', 'Some stuff', '2022-01-10']
+        #session_information = ['Other Session', 'Some stuff', '2022-01-10']
         #change_session_data = 'Other Session', 'date', '2012-04-20'
         #del_session = session_information[0]
 
-        self.add_session_data_to_json(session_data_json, session_information)
+        #self.add_session_data_to_json(session_data_json, session_information)
 
         """ print("_______________________________")
         self.print_session_data_from_json(session_data_json, 'Other Session', 'date')
@@ -47,7 +49,10 @@ class ScrollableField(BoxLayout):
         for text in session_data_json:
             row_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
             row_layout.add_widget(Label(text=text))
-            row_layout.add_widget(Button(text="Delete", on_press=self.delete_session_in_overview_screen))
+            session_name=text
+            row_layout.add_widget(Button(text="Delete", on_press=lambda instance: self.delete_session_in_overview_screen(instance, session_name)))
+
+            #row_layout.add_widget(Button(text="Delete", on_press=self.delete_session_in_overview_screen(row_layout, session_name)))
             scroll_layout.add_widget(row_layout)
 
         # Create the label for displaying session name creation
@@ -66,6 +71,10 @@ class ScrollableField(BoxLayout):
     JSON connected methods
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"""
 
+    def load_data_from_json(self):
+        session_data_json = JsonStore(JSON_FILEPATH)
+        return session_data_json
+
     # Method for printing specific sesion data
     # This method is mainly for debugging, can be deleted later
     def print_session_data_from_json(self, session_data_json, session_name, parameter_to_be_printed):
@@ -80,10 +89,10 @@ class ScrollableField(BoxLayout):
         session_data_json.put(session_name, placehoholder_parameter=parameterA_data, date=date_data)
     
     # Method for removing entries from the json file
-    def remove_session_data_from_json(self, session_data_json, del_session):
-        if session_data_json.exists(del_session):
-            print(f'Remove session "{del_session}" with entries:', session_data_json.get(del_session))
-            session_data_json.delete(del_session)
+    def remove_session_data_from_json(self, session_data_json, name_of_del_session):
+        if session_data_json.exists(name_of_del_session):
+            print(f'Remove session "{name_of_del_session}" with entries:', session_data_json.get(name_of_del_session))
+            session_data_json.delete(name_of_del_session)
 
     # TBD: Finish method for renaiming sessions - not yet working as intended,
     # very static - it seems like there is no possibility to change entries
@@ -114,33 +123,40 @@ class ScrollableField(BoxLayout):
     Functionality within screens
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"""
 
-    def delete_session_in_overview_screen(self, instance):
+    def delete_session_in_overview_screen(self, instance, name_of_del_session):
         # TBD: Write some text to the confirm deletion box
         # Ask for confirmation before deleting the row
         confirm_popup = Popup(title='Confirm Deletion',
                               content=BoxLayout(orientation='horizontal', size_hint_y=None, height=40),
                               size_hint=(None, None), size=(400, 200))
-        yes_button = Button(text="Yes", on_press=lambda x: self.confiremd_deletion_of_session_in_overview_screen(instance.parent, confirm_popup))
+        yes_button = Button(text="Yes", on_press=lambda x: self.confiremd_deletion_of_session_in_overview_screen(instance.parent, confirm_popup, name_of_del_session))
         no_button = Button(text="No", on_press=confirm_popup.dismiss)
         confirm_popup.content.add_widget(yes_button)
         confirm_popup.content.add_widget(no_button)
         confirm_popup.open()
 
-    def confiremd_deletion_of_session_in_overview_screen(self, row_layout, confirm_popup):
+    def confiremd_deletion_of_session_in_overview_screen(self, row_layout, confirm_popup, name_of_del_session):
         # Remove the row containing the delete button that was pressed
         scroll_layout = row_layout.parent
         scroll_layout.remove_widget(row_layout)
+        
+        # Remove session from JSON file
+        session_data_json = self.load_data_from_json()
+        self.remove_session_data_from_json(session_data_json, name_of_del_session)
+
+
         confirm_popup.dismiss()
     
     def create_row(self, input_field, scroll_layout, session_label):
         # Create a new row with the text from the input field and add it to the scrollable field
         text = input_field.text
+        session_name=text
 
         # Clear the input field after creating the new row
         input_field.text = ''
         row_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
         row_layout.add_widget(Label(text=text))
-        row_layout.add_widget(Button(text="Delete", on_press=self.delete_session_in_overview_screen))
+        row_layout.add_widget(Button(text="Delete", on_press=lambda instance: self.delete_session_in_overview_screen(instance, session_name)))
         scroll_layout.add_widget(row_layout)
         
         # Display the session creation confirmation message for 5 seconds
