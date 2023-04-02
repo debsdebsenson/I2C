@@ -48,11 +48,17 @@ class ScrollableField(BoxLayout):
         layout.add_widget(self.session_label)
         self.add_widget(layout)
 
+        # Create the input field and the "Create" button
         input_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
+
         input_field = TextInput(multiline=False)
+        input_field.bind(on_text_validate=lambda x: self.on_enter(input_field, scroll_layout, self.session_label))
+
         input_layout.add_widget(input_field)
-        input_layout.add_widget(Button(text="Create", on_press=lambda x: self.create_session(input_field, scroll_layout, self.session_label)))
+        create_button=Button(text="Create", on_press=lambda x: self.create_session(input_field, scroll_layout, self.session_label))
+        input_layout.add_widget(create_button)
         self.add_widget(input_layout)
+
 
     """%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     JSON connected methods
@@ -133,9 +139,13 @@ class ScrollableField(BoxLayout):
         session_data_json = self.load_data_from_json()
         self.remove_session_data_from_json(session_data_json, name_of_del_session)
 
-
         confirm_popup.dismiss()
     
+    # Call the method to create a session when the ENTER key is pressed
+    def on_enter(instance, input_field, scroll_layout, session_label):
+        instance.create_session(input_field, scroll_layout, session_label)
+
+    # Create a session
     def create_session(self, input_field, scroll_layout, session_label):
         # Get the text from the input field
         text = input_field.text.strip()
