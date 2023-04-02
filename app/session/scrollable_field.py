@@ -16,6 +16,8 @@ class ScrollableField(BoxLayout):
     def __init__(self, **var_args):
         super(ScrollableField, self).__init__(**var_args)
 
+        self.cols = 1
+
         # Create the scrollable field and add it to the layout
         scroll_view = ScrollView()
         scroll_layout = BoxLayout(orientation='vertical', size_hint_y=None, spacing=5)
@@ -45,7 +47,7 @@ class ScrollableField(BoxLayout):
         for text in session_data_json:
             row_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
             row_layout.add_widget(Label(text=text))
-            row_layout.add_widget(Button(text="Delete", on_press=self.delete_row))
+            row_layout.add_widget(Button(text="Delete", on_press=self.delete_session_in_overview_screen))
             scroll_layout.add_widget(row_layout)
 
         # Create the label for displaying session name creation
@@ -60,6 +62,9 @@ class ScrollableField(BoxLayout):
         input_layout.add_widget(Button(text="Create", on_press=lambda x: self.create_row(input_field, scroll_layout, self.session_label)))
         self.add_widget(input_layout)
 
+    """%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    JSON connected methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"""
 
     # Method for printing specific sesion data
     # This method is mainly for debugging, can be deleted later
@@ -105,19 +110,23 @@ class ScrollableField(BoxLayout):
     store.delete('tito')
     """
 
-    def delete_row(self, instance):
+    """%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    Functionality within screens
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"""
+
+    def delete_session_in_overview_screen(self, instance):
         # TBD: Write some text to the confirm deletion box
         # Ask for confirmation before deleting the row
         confirm_popup = Popup(title='Confirm Deletion',
                               content=BoxLayout(orientation='horizontal', size_hint_y=None, height=40),
                               size_hint=(None, None), size=(400, 200))
-        yes_button = Button(text="Yes", on_press=lambda x: self.delete_row_confirmed(instance.parent, confirm_popup))
+        yes_button = Button(text="Yes", on_press=lambda x: self.confiremd_deletion_of_session_in_overview_screen(instance.parent, confirm_popup))
         no_button = Button(text="No", on_press=confirm_popup.dismiss)
         confirm_popup.content.add_widget(yes_button)
         confirm_popup.content.add_widget(no_button)
         confirm_popup.open()
 
-    def delete_row_confirmed(self, row_layout, confirm_popup):
+    def confiremd_deletion_of_session_in_overview_screen(self, row_layout, confirm_popup):
         # Remove the row containing the delete button that was pressed
         scroll_layout = row_layout.parent
         scroll_layout.remove_widget(row_layout)
@@ -131,7 +140,7 @@ class ScrollableField(BoxLayout):
         input_field.text = ''
         row_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40, spacing=5)
         row_layout.add_widget(Label(text=text))
-        row_layout.add_widget(Button(text="Delete", on_press=self.delete_row))
+        row_layout.add_widget(Button(text="Delete", on_press=self.delete_session_in_overview_screen))
         scroll_layout.add_widget(row_layout)
         
         # Display the session creation confirmation message for 5 seconds
