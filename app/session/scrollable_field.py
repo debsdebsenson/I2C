@@ -9,10 +9,13 @@ from kivy.clock import Clock
 
 from datetime import datetime
 
+import json
+
 # information about kivy.storage: https://kivy.org/doc/stable/api-kivy.storage.html#module-kivy.storage
 from kivy.storage.jsonstore import JsonStore
 
 JSON_FILEPATH='./app/session/data.json'
+PRETTY_JSON_FILEPATH='./app/session/data_pretty.json'
 
 class ScrollableField(BoxLayout):
     
@@ -55,9 +58,20 @@ class ScrollableField(BoxLayout):
     JSON connected methods
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"""
 
+    # Loade all data from a JSON file
     def load_data_from_json(self):
         session_data_json = JsonStore(JSON_FILEPATH)
         return session_data_json
+    
+    # This method is mainly used for faciliating the develpment process by
+    # restructuring the content of a JSON file nicely and more readable.
+    #def pretty_restructuring_json_content(self, data_to_be_restructured):
+    def pretty_restructuring_json_content(self):
+        with open(JSON_FILEPATH, 'r') as json_file:
+            data = json.load(json_file)
+
+        with open(PRETTY_JSON_FILEPATH, 'w') as pretty_file:
+            json.dump(data, pretty_file, indent=4)
 
     # Method for printing specific sesion data
     # This method is mainly for debugging, can be deleted later
@@ -65,12 +79,15 @@ class ScrollableField(BoxLayout):
         print(f'Parameter "{parameter_to_be_printed}" of Session "{session_name}" is:', session_data_json.get(session_name)[parameter_to_be_printed])
 
     # Method for Adding Sessions to the data.json file
-    # session_information is a list
+    # session_information is a list, the second parameter is also a list
     def add_session_data_to_json(self, session_data_json, session_information):
+        #These are single parameters
         session_name = session_information[0]
-        parameterA_data = session_information[1]
         date_data= session_information[2]
-        session_data_json.put(session_name, placehoholder_parameter=parameterA_data, date=date_data)
+        # This is a list
+        empty_list = session_information[1]
+
+        session_data_json.put(session_name, image_pathes=empty_list, date=date_data)
     
     # Method for removing entries from the json file
     def remove_session_data_from_json(self, session_data_json, name_of_del_session):
@@ -146,10 +163,14 @@ class ScrollableField(BoxLayout):
         session_information=[]
         session_data_json = self.load_data_from_json()
         date_data = datetime.today().strftime('%Y-%m-%d')
-        parameterA_data='Placehoholder X'
+        empty_list=[]
         session_name=text
-        session_information = [session_name, parameterA_data, date_data]
+        session_information = [session_name, empty_list, date_data]
         self.add_session_data_to_json(session_data_json, session_information)
+
+        # In ths method the JSOn content is restructured for increasing
+        # readability
+        self.pretty_restructuring_json_content()
         
         # Display the session creation confirmation message for 5 seconds
         session_label.text = f"Session {text} successfully created"
