@@ -22,6 +22,10 @@ from kivy.storage.jsonstore import JsonStore
 JSON_FILEPATH='./app/session/data.json'
 PRETTY_JSON_FILEPATH='./app/session/data_pretty.json'
 
+
+class MyPopup(Popup):
+    pass
+
 class ScrollableField(BoxLayout):
     
     def __init__(self, **var_args):
@@ -130,16 +134,19 @@ class ScrollableField(BoxLayout):
     Functionality within screens
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"""
 
+    # Popup window for confirming before deleting the Session 
     def delete_session_in_overview_screen(self, instance, name_of_del_session):
-        # TBD: Write some text to the confirm deletion box
-        # Ask for confirmation before deleting the row
-        confirm_popup = Popup(title='Confirm Deletion',
-                              content=BoxLayout(orientation='horizontal', size_hint_y=None, height=40),
-                              size_hint=(None, None), size=(400, 200))
+        content = BoxLayout(orientation='vertical')
+        content.add_widget(Label(text='Are you sure you want to delete the session?'))
+        button_layout = BoxLayout()
         yes_button = Button(text="Yes", on_press=lambda x: self.confiremd_deletion_of_session_in_overview_screen(instance.parent, confirm_popup, name_of_del_session))
-        no_button = Button(text="No", on_press=confirm_popup.dismiss)
-        confirm_popup.content.add_widget(yes_button)
-        confirm_popup.content.add_widget(no_button)
+        no_button = Button(text='No')
+        button_layout.add_widget(yes_button)
+        button_layout.add_widget(no_button)
+        content.add_widget(button_layout)
+        confirm_popup = Popup(title='Confirmation', content=content, size_hint=(None, None), size=(400, 200))
+        yes_button.bind(on_release=confirm_popup.dismiss)
+        no_button.bind(on_release=confirm_popup.dismiss)
         confirm_popup.open()
 
     def confiremd_deletion_of_session_in_overview_screen(self, row_layout, confirm_popup, name_of_del_session):
