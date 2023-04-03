@@ -30,7 +30,7 @@ class ScrollableField(BoxLayout):
         self.cols = 1
 
         # Create the scrollable field and add it to the layout
-        scroll_view = ScrollView()
+        scroll_view = ScrollView(scroll_type=['bars'], bar_width=10)
         scroll_layout = BoxLayout(orientation='vertical', size_hint_y=None, spacing=5)
         scroll_layout.bind(minimum_height=scroll_layout.setter('height'))
         scroll_view.add_widget(scroll_layout)
