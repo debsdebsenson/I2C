@@ -18,35 +18,20 @@ from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.clock import Clock
+from kivy.lang import Builder
 
 # Internal imports
 from session_management_screen import SessionManagement
 
+# Load content (buttons and theit behaviour) the kv file
+Builder.load_file('./kv_files/start_screen.kv')
 
-# This class sets up the layout of the first screen with two buttons and
-# handles the button press events to switch to the next screen or close the
-# application.
-class  StartScreen(FloatLayout):
+# This class handles the button press events to switch to the next screen or
+#  close the application for the start screen.
+class  StartScreen(Screen):
+#class  StartScreen(FloatLayout):
     def __init__(self, **kwargs):
-        super( StartScreen, self).__init__(**kwargs)
-
-        # Define buttons
-        self.btn1 = Button(text='Start')
-        self.btn2 = Button(text='Exit')
-
-        # Set the size and position of the buttons
-        self.btn1.size_hint = (0.5, 0.3)
-        self.btn1.pos_hint = {'center_x': 0.5, 'center_y': 0.7}
-        self.btn2.size_hint = (0.5, 0.3)
-        self.btn2.pos_hint = {'center_x': 0.5, 'center_y': 0.3}
-
-        # bind button callbacks
-        self.btn1.bind(on_press=self.btn1_behaviour)
-        self.btn2.bind(on_press=self.close_app)
-
-        # Add the buttons to the layout
-        self.add_widget(self.btn1)
-        self.add_widget(self.btn2)
+        super(StartScreen, self).__init__(**kwargs)
 
     # Implementation of a little delay before opening the next page 
     def btn1_behaviour(self, *args):
@@ -59,9 +44,12 @@ class  StartScreen(FloatLayout):
         app.screen_manager.current = 'sessionManagement'
 
     # Close the app
-    def close_app(self, instance):
+    def close_app(self):
         App.get_running_app().stop()
 
+
+class MyScreenManager(ScreenManager):
+    pass
 
 # The I2CApp class inherits from the App class in Kivy and is responsible for
 # building and running the application.
@@ -72,6 +60,17 @@ class I2CApp(App):
     # allows the user to interact with the application through the screens
     # defined in the StartScreen and SessionManagement classes.
     def build(self):
+        self.screen_manager = MyScreenManager()
+        self.screen_manager.add_widget(StartScreen(name="start_screen"))
+
+        self.session_management = SessionManagement()
+        screen = Screen(name='sessionManagement')
+        screen.add_widget(self.session_management)
+        self.screen_manager.add_widget(screen)
+
+        return self.screen_manager
+    
+    """ def build(self):
         self.screen_manager = ScreenManager()
         self.start_screen = StartScreen()
         screen = Screen(name='startScreen')
@@ -83,7 +82,7 @@ class I2CApp(App):
         screen.add_widget(self.session_management)
         self.screen_manager.add_widget(screen)
 
-        return self.screen_manager
+        return self.screen_manager """
 
 
 # Main function
