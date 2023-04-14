@@ -1,5 +1,9 @@
 # I2C
 
+Version 0.0.2
+
+**DISCLAIMER:** This project is still under development and not yet ready to use!
+
 **I2C (Image to communicate)** is an application to enable people to communicate
 via eye movements using images.
 
