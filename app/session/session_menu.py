@@ -73,16 +73,12 @@ class SessionMenuEmptySession(FloatLayout):
     def go_back_to_scrollable_field(self):
         print("Going back to last screen will be implemented in the future")
 
-    # Implementation of a little delay before opening the next page 
-    def start_session(self, *args):
-
-        # Clock.schedule_once(<action>, <delay time in s>)
-        Clock.schedule_once(self.switch_to_next_view, 0.1)
-
     # Switch to the next screen view/page
     def switch_to_edit_session(self, *args):
         #app.screen_manager.current = 'sessionManagement'
         print("Placeholder")
+        # Clock.schedule_once(<action>, <delay time in s>)
+        #Clock.schedule_once(self.switch_to_next_view, 0.1)
 
 
 class MyApp(App):
