@@ -20,8 +20,8 @@ import json
 # information about kivy.storage: https://kivy.org/doc/stable/api-kivy.storage.html#module-kivy.storage
 from kivy.storage.jsonstore import JsonStore
 
-JSON_FILEPATH='./app/session/data.json'
-PRETTY_JSON_FILEPATH='./app/session/data_pretty.json'
+JSON_FILEPATH='./app/session/sessions_data/data.json'
+PRETTY_JSON_FILEPATH='./app/session/sessions_data/data_pretty.json'
 
 class MyPopup(Popup):
     pass
