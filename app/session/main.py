@@ -21,7 +21,7 @@ from kivy.clock import Clock
 from kivy.lang import Builder
 
 # Internal imports
-from session_management_screen import SessionManagement
+from session_management_screen import SessionManagementScrollableField
 
 # Load content (buttons and theit behaviour) the kv file
 Builder.load_file('./kv_files/start_screen.kv')
@@ -63,27 +63,12 @@ class I2CApp(App):
         self.screen_manager = MyScreenManager()
         self.screen_manager.add_widget(StartScreen(name="start_screen"))
 
-        self.session_management = SessionManagement()
+        self.session_management = SessionManagementScrollableField()
         screen = Screen(name='sessionManagement')
         screen.add_widget(self.session_management)
         self.screen_manager.add_widget(screen)
 
         return self.screen_manager
-    
-    """ def build(self):
-        self.screen_manager = ScreenManager()
-        self.start_screen = StartScreen()
-        screen = Screen(name='startScreen')
-        screen.add_widget(self.start_screen)
-        self.screen_manager.add_widget(screen)
-
-        self.session_management = SessionManagement()
-        screen = Screen(name='sessionManagement')
-        screen.add_widget(self.session_management)
-        self.screen_manager.add_widget(screen)
-
-        return self.screen_manager """
-
 
 # Main function
 if __name__ == '__main__':
