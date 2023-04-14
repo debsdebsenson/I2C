@@ -139,7 +139,7 @@ class ScrollableField(BoxLayout):
         content = BoxLayout(orientation='vertical')
         content.add_widget(Label(text='Are you sure you want to delete the session?'))
         button_layout = BoxLayout()
-        yes_button = Button(text="Yes", on_press=lambda x: self.confiremd_deletion_of_session_in_overview_screen(instance.parent, confirm_popup, name_of_del_session))
+        yes_button = Button(text="Yes", on_press=lambda x: self.confirmed_deletion_of_session_in_overview_screen(instance.parent, confirm_popup, name_of_del_session))
         no_button = Button(text='No')
         button_layout.add_widget(yes_button)
         button_layout.add_widget(no_button)
@@ -149,7 +149,7 @@ class ScrollableField(BoxLayout):
         no_button.bind(on_release=confirm_popup.dismiss)
         confirm_popup.open()
 
-    def confiremd_deletion_of_session_in_overview_screen(self, row_layout, confirm_popup, name_of_del_session):
+    def confirmed_deletion_of_session_in_overview_screen(self, row_layout, confirm_popup, name_of_del_session):
         # Remove the row containing the delete button that was pressed
         scroll_layout = row_layout.parent
         scroll_layout.remove_widget(row_layout)
