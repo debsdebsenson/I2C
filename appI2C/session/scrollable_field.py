@@ -15,13 +15,11 @@ from kivy.lang import Builder
 
 from datetime import datetime
 
+import os
 import json
 
 # information about kivy.storage: https://kivy.org/doc/stable/api-kivy.storage.html#module-kivy.storage
 from kivy.storage.jsonstore import JsonStore
-
-JSON_FILEPATH='./app/session/sessions_data/data.json'
-PRETTY_JSON_FILEPATH='./app/session/sessions_data/data_pretty.json'
 
 class MyPopup(Popup):
     pass
@@ -67,6 +65,56 @@ class ScrollableField(BoxLayout):
         input_layout.add_widget(create_button)
         self.add_widget(input_layout)
 
+        """%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    Pathes
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"""
+
+    """ import os
+
+    class MyClass:
+        def __init__(self, json_filename):
+            self.json_filename = json_filename
+
+        def get_json_filepath(self):
+            
+            #Returns the absolute file path of the JSON file.
+            #Raises an exception if the file does not exist or is not a file.
+            
+            json_file = os.path.abspath(self.json_filename)
+            if not os.path.exists(json_file):
+                raise FileNotFoundError(f"JSON file '{json_file}' does not exist.")
+            elif not os.path.isfile(json_file):
+                raise ValueError(f"JSON file '{json_file}' is not a file.")
+            return json_file """
+
+
+    def get_filepath_to_session_data(self):
+        # This method concatenates and returns the absolute file path to the session_data folder
+        abs_path_appI2C = os.path.join(os.path.abspath(os.getcwd()), 'appI2C')
+        abs_path_session = os.path.join(abs_path_appI2C, 'session')
+        abs_path_session_data = os.path.join(abs_path_session, 'sessions_data')
+        return abs_path_session_data
+
+    def get_json_filepath(self):
+        #Returns the absolute file path of the JSON file.
+        #Raises an exception if the file does not exist or is not a file.
+        json_file = os.path.join(self.get_filepath_to_session_data(), 'data.json')
+        if not os.path.exists(json_file):
+            raise FileNotFoundError(f"JSON file '{json_file}' does not exist.")
+        elif not os.path.isfile(json_file):
+            raise ValueError(f"JSON file '{json_file}' is not a file.")
+        return json_file
+
+    def get_pretty_json_filepath(self):
+        #Returns the absolute file path of the PRETTY JSON file.
+        #Raises an exception if the file does not exist or is not a file.
+        pretty_json_file = os.path.join(self.get_filepath_to_session_data(), 'data_pretty.json')
+        if not os.path.exists(pretty_json_file):
+            raise FileNotFoundError(f"JSON file '{pretty_json_file}' does not exist.")
+        elif not os.path.isfile(pretty_json_file):
+            raise ValueError(f"JSON file '{pretty_json_file}' is not a file.")
+        return pretty_json_file
+
     """%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     Go to session menu
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"""
@@ -82,17 +130,17 @@ class ScrollableField(BoxLayout):
 
     # Loade all data from a JSON file
     def load_data_from_json(self):
-        session_data_json = JsonStore(JSON_FILEPATH)
+        session_data_json = JsonStore(self.get_json_filepath())
         return session_data_json
     
     # This method is mainly used for faciliating the develpment process by
     # restructuring the content of a JSON file nicely and more readable.
     #def pretty_restructuring_json_content(self, data_to_be_restructured):
     def pretty_restructuring_json_content(self):
-        with open(JSON_FILEPATH, 'r') as json_file:
+        with open(self.get_json_filepath(), 'r') as json_file:
             data = json.load(json_file)
 
-        with open(PRETTY_JSON_FILEPATH, 'w') as pretty_file:
+        with open(self.get_pretty_json_filepath(), 'w') as pretty_file:
             json.dump(data, pretty_file, indent=4)
 
     # Method for printing specific sesion data
