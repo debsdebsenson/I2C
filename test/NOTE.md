@@ -5,13 +5,13 @@
 * The tests can be run from the I2C/ folder by typing:
 
 ```Python
-pytest
+pytest test/
 ```
 
 or:
 
 ```Python
-pytest test/
+pytest
 ```
 
 ## Other
