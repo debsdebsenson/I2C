@@ -23,6 +23,6 @@ PyScreeze==0.1.28
 python-xlib==0.33
 python3-xlib==0.15
 pytweening==1.0.4
-requests==2.28.2
+requests==2.31.0
 six==1.16.0
 urllib3==1.26.14
