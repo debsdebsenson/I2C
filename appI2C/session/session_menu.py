@@ -86,7 +86,8 @@ class SessionMenuEmptySession(FloatLayout):
 
 class MyApp(App):
     def build(self):
-        return SessionMenuEmptySession()
+        #return SessionMenuEmptySession()
+        return SessionMenuRegular()
 
 
 if __name__ == '__main__':

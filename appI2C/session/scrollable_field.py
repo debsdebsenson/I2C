@@ -3,24 +3,25 @@ Here you find the code for the second screen, the menu where Sessions can be
 started, created and deleted from.
 """
 
-#from kivy.app import App
+from kivy.app import App
+from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
 from kivy.uix.popup import Popup
-#from kivy.clock import Clock
-#from kivy.lang import Builder
-#from datetime import datetime
 import os
 import json
 from kivy.storage.jsonstore import JsonStore
 
+from session_menu import SessionMenuRegular
 
 class MyPopup(Popup):
     pass
 
+class MyScreenManager(ScreenManager):
+    pass
 
 class ScrollableField(BoxLayout):
 
@@ -71,8 +72,11 @@ class ScrollableField(BoxLayout):
         input_layout.add_widget(create_button)
         return input_layout
 
+    #####################################################################################################
+    # Entrypoint to the session menu
     def go_to_session_menu(self, instance):
         print("Placeholder - from here change to the session menu")
+        
 
     def load_data_from_json(self):
         session_data_json = JsonStore(self.get_json_filepath())
